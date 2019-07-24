@@ -1,0 +1,249 @@
+
+@media only screen and (min-width: 768px) and (max-width: 1550px) {
+
+  .container-esp{
+    width: 90% !important;
+  }
+  
+  header h2, header h3{
+      font-size:2.5rem !important;
+  }
+}
+html, body{
+    overflow-x: hidden;
+    overflow-y: hidden;
+    
+}
+
+
+  
+
+header{
+	background-color: rgb(53,53,53);
+	font-family:impact;
+	color:white;
+}
+
+header img{
+    text-align: center;
+    width: 150px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+
+header h2, header h3{
+    font-family: bebas;
+    text-align: center;
+    margin:0 !important;
+    padding-top:25px;
+    padding-bottom: 25px;
+    font-size: 4.5rem;
+}
+
+.side-nav{
+    transform: translateX(0%) !important;
+    color:white;
+    margin-top:0%;
+}
+
+.side-nav ul li h5 a{
+	color:white;
+
+}
+
+.side-nav h3{
+	margin-top:0% !important;
+
+}
+
+.no-margin-bottom{
+	margin-bottom: 0%;
+}
+
+.no-margin{
+	margin-top:0%;
+}
+
+.side-nav ul h4{
+	margin:0;
+	margin-bottom: 5%;
+}
+
+
+.container-fluid {
+  width: 100%;
+  max-width:initial;
+}
+.container-fluid > .row {
+  margin: 0;
+}
+.container-fluid > .row > .col {
+  padding: 0;
+}
+
+.container-esp{
+	width: 100% ;
+}
+
+.float-right{
+	float:right;
+	margin-right: 10%;
+}
+
+#buscador {
+	margin-top:4%;
+}
+
+#buscador #busqueda{
+	float: left;
+    width: 90%;
+}
+
+#buscador button{
+	    margin-top: 3%;
+    margin-left: 3%;
+}
+
+.cuadrado{
+	background-color: transparent;
+    color: rgb(81,83,177);
+    padding-top: 20%;
+    border-color:rgb(81,83,177);
+    border-style:solid;
+    border-width:15px; 
+    height:400px;
+}
+
+.cuadrado h1{
+    font-weight: bolder;
+    padding:0;
+    margin: 0;
+
+}
+
+.cuadrado:hover{
+	background-color:rgb(81,83,177);
+	color:white; 
+}
+
+#resultadoBuscador{
+	position:absolute;
+	background-color: white;
+    border-color:rgb(81,83,177);
+    border-style:solid;
+    border-width:1px;
+    width: 59%;
+    display:none;
+    font-family: helvetica,arial;
+    padding: 1%;
+    margin-top: 3%;
+}
+
+.mes{ width:100%; float:left; margin-right:1%; text-align:center; text-align:center;}
+.mes_titulo{ background:#5153b1; color:#fff; float:left; width:100% }
+.mes_monto{ float:left; width:100%; height:30px}
+
+.genComprobante{
+    background-color:rgb(81,83,177);
+    color:white;
+    font-family:arial,helvetica;
+}
+
+
+.genComprobante h3{
+    color:white;
+}
+
+
+.genComprobante input{
+    color:black;
+}
+
+.genComprobante label{
+    color:white;
+}
+
+input[type=submit] {
+    color:white !important;
+}
+
+.white-text{
+    color:white !important;
+}
+
+
+.genComprobante input{
+    color:black;
+}
+
+#imprimir p {
+
+    font-family: arial, helvetica;
+    
+}
+
+#imprimir{
+
+    text-align: center;
+
+}
+
+textarea{
+    width: 45%;
+    height: 200px;
+}
+
+.detalle h5{
+    margin-top:0;
+}
+
+.scroll{
+    max-height: 550px;
+    overflow-y: scroll;
+}
+
+.table-cont{
+    height: 800px;
+    max-height: 500px;
+    overflow-y: scroll;
+}
+
+.cont-gral{
+    overflow-y: scroll;
+    height: 85vh;
+    overflow-x: hidden;
+}
+
+
+.home-btn{
+    cursor:pointer;
+}
+.row1{
+    margin-bottom: 0;
+    background-color: #a79d9d24;
+}
+.row1 p {
+    margin:0;
+    font-size: 1.5rem;
+
+}
+
+.row1 a {
+    color:white;
+
+}
+
+.row1 a:hover {
+    color:rgb(81,83,177);
+
+}
+
+
+.last-row{
+    padding-bottom:35%;
+}
+
+a.eliminarActividad{
+    font-size:2rem;
+}

@@ -1,0 +1,7 @@
+User-Agent: Googlebot
+Disallow: index.php
+Disallow: HomeDecilo.php
+
+Disallow: productora_cashflow
+Disallow: cashflow
+Disallow: alumnas

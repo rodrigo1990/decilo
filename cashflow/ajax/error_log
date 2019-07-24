@@ -1,0 +1,32 @@
+[26-Mar-2018 15:26:19 UTC] PHP Warning:  mysqli::mysqli(): (HY000/1045): Access denied for user 'root'@'host.legionvps.com' (using password: NO) in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 17
+[26-Mar-2018 15:26:19 UTC] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 19
+[26-Mar-2018 15:26:19 UTC] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 558
+[26-Mar-2018 15:26:19 UTC] PHP Fatal error:  Call to a member function bind_param() on a non-object in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 560
+[26-Mar-2018 15:26:56 UTC] PHP Warning:  mysqli::mysqli(): (HY000/1045): Access denied for user 'root'@'host.legionvps.com' (using password: NO) in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 17
+[26-Mar-2018 15:26:56 UTC] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 19
+[26-Mar-2018 15:26:56 UTC] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 558
+[26-Mar-2018 15:26:56 UTC] PHP Fatal error:  Call to a member function bind_param() on a non-object in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 560
+[26-Mar-2018 15:27:16 UTC] PHP Warning:  mysqli::mysqli(): (HY000/1045): Access denied for user 'root'@'host.legionvps.com' (using password: NO) in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 17
+[26-Mar-2018 15:27:16 UTC] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 19
+[26-Mar-2018 15:27:16 UTC] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 558
+[26-Mar-2018 15:27:16 UTC] PHP Fatal error:  Call to a member function bind_param() on a non-object in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 560
+[26-Mar-2018 15:27:53 UTC] PHP Warning:  mysqli::mysqli(): (HY000/1045): Access denied for user 'root'@'host.legionvps.com' (using password: NO) in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 17
+[26-Mar-2018 15:27:53 UTC] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 19
+[26-Mar-2018 15:27:53 UTC] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 49
+[26-Mar-2018 15:27:53 UTC] PHP Fatal error:  Call to a member function bind_param() on a non-object in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 51
+[26-Mar-2018 15:28:29 UTC] PHP Warning:  mysqli::mysqli(): (HY000/1045): Access denied for user 'root'@'host.legionvps.com' (using password: NO) in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 17
+[26-Mar-2018 15:28:29 UTC] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 19
+[26-Mar-2018 15:28:29 UTC] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 49
+[26-Mar-2018 15:28:29 UTC] PHP Fatal error:  Call to a member function bind_param() on a non-object in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 51
+[26-Mar-2018 15:31:08 UTC] PHP Warning:  mysqli::mysqli(): (HY000/1045): Access denied for user 'root'@'host.legionvps.com' (using password: NO) in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 17
+[26-Mar-2018 15:31:08 UTC] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 19
+[26-Mar-2018 15:31:08 UTC] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 49
+[26-Mar-2018 15:31:08 UTC] PHP Fatal error:  Call to a member function bind_param() on a non-object in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 51
+[26-Mar-2018 15:33:17 UTC] PHP Warning:  mysqli::mysqli(): (HY000/1045): Access denied for user 'root'@'host.legionvps.com' (using password: NO) in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 17
+[26-Mar-2018 15:33:17 UTC] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 19
+[26-Mar-2018 15:33:17 UTC] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 49
+[26-Mar-2018 15:33:17 UTC] PHP Fatal error:  Call to a member function bind_param() on a non-object in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 51
+[26-Mar-2018 15:33:39 UTC] PHP Warning:  mysqli::mysqli(): (HY000/1045): Access denied for user 'root'@'host.legionvps.com' (using password: NO) in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 17
+[26-Mar-2018 15:33:39 UTC] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 19
+[26-Mar-2018 15:33:39 UTC] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 49
+[26-Mar-2018 15:33:39 UTC] PHP Fatal error:  Call to a member function bind_param() on a non-object in /home/legion/public_html/test/decilo/cashflow/clases/BaseDatos.php on line 51
