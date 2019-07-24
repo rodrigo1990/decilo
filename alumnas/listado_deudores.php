@@ -24,6 +24,7 @@ generarDeudas($conexion);
                 <li><h5><a href="visualizar_ingresos.php">Generar reportes</a></h5></li>
                 <li><h5><a href="listado_deudores.php">Deudores</a></h5></li>
                 <li><h5><a href="alumnas_eliminadas.php">Alumn@as eliminadas</a></h5></li>
+                <li><h5><a href="grupos.php">Grupos</a></h5></li>
             </ul>
           </div>
       </div>
