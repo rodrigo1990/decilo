@@ -37,7 +37,7 @@ class Validator{
 }
 public function validarAdminDeciloAlumnas($usuario,$pass){
 
-	$this->mysqli=new mysqli("162.255.162.75", 'edbplata_rodrigo','Javierjavier1990', "edbplata_alumnas");
+	$this->mysqli=new mysqli("localhost", 'root','', "edbplata_alumnas");
 
 	$this->mysqli->set_charset("utf8");
 

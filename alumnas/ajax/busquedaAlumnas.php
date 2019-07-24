@@ -5,7 +5,7 @@ require_once("../inc/conexion.php");
 	$bus="%".$_GET['busqueda']."%";
 	
 	$sql="SELECT * FROM alumna 
-	WHERE nombre like '$bus' OR mail LIKE '$bus'";
+	WHERE  (nombre like '$bus' OR mail LIKE '$bus') AND eliminada=0";
 	$consulta=mysqli_query($conexion, $sql);
 	
 	echo "<ul>";

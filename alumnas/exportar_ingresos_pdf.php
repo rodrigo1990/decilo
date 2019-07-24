@@ -33,7 +33,7 @@ INNER JOIN grupo on cuota_alumna.id_grupo=grupo.id_grupo
 INNER JOIN sede on grupo.id_sede=sede.id_sede
 INNER JOIN concepto ON  cuota_alumna.id_concepto=concepto.id_concepto 
 WHERE cuota_alumna.mes=".$_GET['mes']." AND cuota_alumna.anio=".$_GET['anio'].
-" AND cuota_alumna.id_grupo=".$_GET['id_grupo']." ORDER BY cuota_alumna.fecha_pago";
+" AND esta_paga = 1 AND cuota_alumna.id_grupo=".$_GET['id_grupo']." ORDER BY cuota_alumna.fecha_pago";
 	
 }else{
  $sql="SELECT cuota_alumna.*, alumna.nombre, grupo.grupo, sede.sede, concepto.concepto
@@ -41,14 +41,14 @@ FROM cuota_alumna INNER JOIN alumna ON cuota_alumna.id_alumna=alumna.id_alumna
 INNER JOIN grupo on cuota_alumna.id_grupo=grupo.id_grupo
 INNER JOIN sede on grupo.id_sede=sede.id_sede 
 INNER JOIN concepto ON cuota_alumna.id_concepto=concepto.id_concepto 
-WHERE cuota_alumna.mes=".$_GET['mes']." AND cuota_alumna.anio=".$_GET['anio'].
+WHERE cuota_alumna.mes=".$_GET['mes']." AND esta_paga = 1 AND cuota_alumna.anio=".$_GET['anio'].
 " ORDER BY cuota_alumna.fecha_pago";
 }
 $consulta=mysqli_query($conexion, $sql);
 
 while($fila=mysqli_fetch_assoc($consulta)){
 	
-	$texto='Fecha pago: '.date("d-m-Y", $fila['fecha_pago']).' | Concepto: '.$fila['concepto'].' | '.$fila['nombre'].' - $ '.$fila['monto'].' - '.$fila['grupo'].' / '.$fila['sede'].' | '.$fila['mes'].'/'.$fila['anio'];
+	$texto='Fecha pago: '.date("d-m-Y", strtotime($fila['fecha_pago'])).' | Concepto: '.$fila['concepto'].' | '.$fila['nombre'].' - $ '.$fila['monto'].' - '.$fila['grupo'].' / '.$fila['sede'].' | '.$fila['mes'].'/'.$fila['anio'];
 	
 	$pdf->Cell(0,4, $texto,0,1);
 	

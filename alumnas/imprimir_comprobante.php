@@ -32,7 +32,7 @@ $fila=mysqli_fetch_assoc($consulta);
 
     <h4>Alumna: <?php echo $fila['nombre'] ?></h4><br />
     <h4>Mail:  <?php echo $fila['mail'] ?></h4><br />
-    <h4>Fecha pago: <?php echo date("d-m-Y", $fila['fecha_pago']) ?></h4>  <br />
+    <h4>Fecha pago: <?php echo date("d-m-Y", strtotime($fila['fecha_pago'])) ?></h4>  <br />
     <h4>Mes: <?php echo $fila['mes'] ?>/ A&#241;o: <?php echo $fila['anio'] ?></h4> <br />
     <h4>Grupo: <?php echo $fila['grupo'] ?></h4><br />
     <h4>Monto: $<?php echo $fila['monto'] ?></h4><br />

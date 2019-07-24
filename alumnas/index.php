@@ -41,6 +41,9 @@ include("../includes/menu-top-alumnas.php");
             <ul class="left-align no-margin">
             <li><h5><a href="index.php">Alta alumno</a></h5></li>
                 <li><h5><a href="visualizar_ingresos.php">Generar reportes</a></h5></li>
+                <li><h5><a href="listado_deudores.php">Deudores</a></h5></li>
+                <li><h5><a href="alumnas_eliminadas.php">Alumn@as eliminadas</a></h5></li>
+                <li><h5><a href="grupos.php">Grupos</a></h5></li>
             </ul>
           </div>
       </div>
@@ -90,6 +93,8 @@ include("../includes/menu-top-alumnas.php");
                 </form>
                 <br />
                   <button  class="waves-effect waves-light btn" style="color:white !important;" id="generar_comprobante" onClick="window.open('generar_comprobante.php?id_alumna=<?php echo $_GET['id_alumna'] ?>','Comprobante','width=400,height=500')">Generar Comprobante</button>
+                    <br><br>
+                  <button class="waves-effect waves-light btn" onClick="eliminarAlumna(<?php echo $_GET['id_alumna'] ?>)"> Eliminar alumn@</button>
                 <div id="comprobantes" class='last-row'>
                 <?php
 				
@@ -184,6 +189,48 @@ include("../includes/menu-top-alumnas.php");
             document.getElementById("resultadoBuscador").style.display = "none";
 
         }
+}
+
+
+ function eliminarAlumna(idAlumno){
+
+
+    alert(idAlumno);
+
+    
+
+            $.ajax({
+            data:"idAlumna="+ idAlumno,
+            url:'ajax/eliminarAlumna.php',
+            type:'post',
+            success:function(response){
+                if(response==true){
+                    alert("¡Alumn@ eliminado con exito!");
+                }else{
+                    var c = confirm('Est@ alumn@ tiene cuotas adeudadas, si prosigue, las deudas se tomaran como pagadas.');
+
+                    if(c ==true){
+
+                         $.ajax({
+                            data:"idAlumna="+ idAlumno,
+                            url:'ajax/pagarDeuda.php',
+                            type:'post',
+                            success:function(response){
+                                alert("¡Alumn@ eliminado con exito!");         
+
+                            }
+                            });
+
+
+                    }else{
+
+                    }
+                }
+
+            }
+            });
+
+        
 }
 </script>
 <script>

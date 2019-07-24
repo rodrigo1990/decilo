@@ -3,6 +3,40 @@
 $meses_nombre=array("Seleccione","Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
 
 
+
+function generarDeudas($conexion){
+
+	$mesActual = date('m');
+	$anioActual = date('Y');
+
+	$sql = "UPDATE cuota_alumna
+				SET adeuda = 1
+				WHERE mes  = '$mesActual' AND anio = '$anioActual' AND esta_paga=0 ";
+
+	$consulta=mysqli_query($conexion, $sql);
+
+	
+
+
+}
+
+function listarDeudores($conexion){
+
+    $sql="SELECT AL.nombre as nombre_alumna, GRU.grupo AS nombre_grupo, CA.mes, CA.anio
+    	  FROM cuota_alumna CA JOIN alumna AL ON CA.id_alumna = AL.id_alumna 
+    	  						JOIN grupo GRU ON CA.id_grupo = GRU.id_grupo
+
+
+    	  WHERE adeuda=1";
+	$consulta=mysqli_query($conexion, $sql);
+
+	
+
+	return mysqli_fetch_array($consulta);
+	
+}//fin function
+
+
 function generarSedes($conexion, $option_sel=0){
 
 	echo '<option value="0">Todas</option>';
@@ -33,13 +67,18 @@ function agregarAlumna( $conexion, $nombre, $fecha_ingreso, $fecha_nacimiento, $
 		
 	$sql="INSERT INTO alumna(nombre, fecha_ingreso, fecha_nacimiento, mail, celular,  aclaraciones)
 		VALUES('$nombre', '$fecha_i', '$fecha_nac', '$mail', '$celular',  '$aclaraciones')";
-	$consulta=mysqli_query($conexion, $sql);		
-		
+
+
+	$consulta=mysqli_query($conexion, $sql);	
+
 	$id_alumna=mysqli_insert_id($conexion);
+	
+
 	return $id_alumna;
+	
 
 				
-}
+}//function
 
 function modificarAlumna( $conexion, $id_alumna, $nombre, $fecha_ingreso, $fecha_nacimiento, $mail, $celular, $aclaraciones){	    
 
@@ -77,15 +116,94 @@ function mostrarResultadosBusqueda($conexion, $busqueda){
 		
 }
 
-function generarComprobante($conexion,$conexion2, $id_alumna, $mes, $anio, $monto, $id_concepto, $id_grupo, $fecha_pago ){
-	$fp=strtotime($fecha_pago);
+function generarComprobante($conexion,$conexion2, $id_alumna, $mes, $anio, $monto, $id_concepto, $id_grupo, $fecha_pago,$deuda ){
+
+	/*GENERAR COMPROBANTES QUE DEBERAN PAGARSE*/
+	$mesActual = (int)$mes;
+	$anioActual = (int)$anio;
+
+	$fp=$fecha_pago;
+
+	if($deuda=="deuda"){
+
+		$sql="INSERT INTO cuota_alumna(id_alumna, mes, anio, monto, id_concepto,  id_grupo, fecha_pago, eliminada, adeuda, esta_paga)
+					VALUES($id_alumna, $mesActual, $anioActual, 0,  $id_concepto,$id_grupo,null,0,1,0)";
+
+		$consulta=mysqli_query($conexion, $sql);
+	}
+
+	
+
+	//BUSCO QUE EXISTAN COMPROBANTES QUE HAGAN REFERENCIA A AL ACTIVIDAD/GRUPO ESCOGIDA
+	$sql="SELECT * 
+		FROM cuota_alumna
+		WHERE id_alumna=$id_alumna AND id_grupo=$id_grupo";
+
+		$consulta=mysqli_query($conexion, $sql);
+
+		$fila = mysqli_fetch_assoc($consulta);
+
+		//CUENTO LA CANTIDAD DE REGISTROS QUE CORRESPONDAN A LA ACTIVIDAD Y AL ALUMNO, SI LA CANTIDAD ES 13
+		//SIGNIFICA QUE EL ALUMNO A COMPLETADO EL PRIMER Aﾃ前 Y ES NECESARIO CREAR 13 REGISTROS MAS.
+		$sql2="SELECT COUNT(*) as cantidad
+		FROM cuota_alumna
+		WHERE id_alumna=$id_alumna AND id_grupo=$id_grupo AND esta_paga=1";
+
+		$consulta2=mysqli_query($conexion, $sql2);
+
+		$fila2 = mysqli_fetch_assoc($consulta2);
+
+
+		//SOLAMENTE SI EXISTE, VOY A GENERAR TODOS LOS COMPROBANTES QUE DEBEN PAGARSE
+		//O SI EL ALUMNO HA CURSADO LOS 13 MESES DE CURSO
+		if(!$fila OR $fila2['cantidad']==13){
+
+			for($i=0; $i<=12;$i++){
+
+				if($mesActual==0){
+					$mesActual=1;
+				}
+
+				$sql="INSERT INTO cuota_alumna(id_alumna, mes, anio, monto, id_concepto,  id_grupo, fecha_pago, eliminada, adeuda, esta_paga)
+					VALUES($id_alumna, $mesActual, $anioActual, 0,  $id_concepto,$id_grupo,null,0,0,0)";
+
+				$consulta=mysqli_query($conexion, $sql);
+
+				$mesActual+=1;
+
+				if($mesActual>=13){
+
+					$anioActual+=1;
+					$mesActual=00;
+				}
+
+		}//FOR
+
+	}//IF
+
 
 	if($id_concepto!=4){
 	
-		$sql="INSERT INTO cuota_alumna(id_alumna, mes, anio, monto, id_concepto, id_grupo, fecha_pago)
-		VALUES($id_alumna, '$mes', '$anio', '$monto', '$id_concepto', '$id_grupo', '$fp')";
+		//$sql="INSERT INTO cuota_alumna(id_alumna, mes, anio, monto, id_concepto, id_grupo, fecha_pago)
+		//VALUES($id_alumna, '$mes', '$anio', '$monto', '$id_concepto', '$id_grupo', '$fp')";
+		//ACTUALIZAR COMPROBANTE PAGADO
+		$sql = "UPDATE cuota_alumna
+				SET   monto = $monto, fecha_pago = '$fp',esta_paga=1, adeuda=0
+				WHERE id_alumna = $id_alumna AND mes = $mes AND anio = $anio AND id_concepto = $id_concepto AND id_grupo = $id_grupo";
+
 		$consulta=mysqli_query($conexion, $sql);
-		$id_cuota=mysqli_insert_id($conexion);
+		//$id_cuota=mysqli_insert_id($conexion);
+
+		$sql = "SELECT id_cuota
+				FROM cuota_alumna
+				WHERE id_alumna = $id_alumna AND mes = $mes AND anio = $anio AND id_concepto = $id_concepto AND id_grupo = $id_grupo  ";
+
+		$consulta=mysqli_query($conexion, $sql);
+
+		$fila=mysqli_fetch_assoc($consulta);
+
+		$id_cuota = $fila['id_cuota'];
+
 
 	}else{
 
@@ -100,6 +218,7 @@ function generarComprobante($conexion,$conexion2, $id_alumna, $mes, $anio, $mont
 
 	if($id_concepto!=4){
 
+		//DEVOLVER INFORMACION DEL ALUMNO PARA GENERAR COMPROBANTE
 		$sql = "SELECT nombre,mail
 				FROM alumna 
 				WHERE id_alumna=$id_alumna";
@@ -257,6 +376,8 @@ function mostrarComprobantes($conexion, $id_alumna, $id_grupo){
                 $sql="SELECT * FROM cuota_alumna WHERE id_alumna=$id_alumna
                 AND id_grupo=$id_grupo
 				AND eliminada=0
+				AND id_concepto=1
+				AND esta_paga = 1
                 AND anio=".date("Y")." ORDER BY mes";
                 $consulta=mysqli_query($conexion, $sql);
                 while($fila=mysqli_fetch_assoc($consulta)){
@@ -304,7 +425,7 @@ echo '<table>
 while($fila=mysqli_fetch_assoc($consulta)){
 	
 	echo '<tr>
-			<td>'.date("d-m-Y",$fila['fecha_pago']).'</td>
+			<td>'.date("d-m-Y",strtotime($fila['fecha_pago'])).'</td>
 			<td>$'.$fila['monto'].'</td>
 			<td>'.utf8_encode($fila['concepto']).'</td>
 			<td>'.$fila['mes'].'-'.$fila['anio'].'</td>
@@ -315,6 +436,33 @@ echo "</tbody>";
 echo "</table>";
 }
 				}//fin de si grupo!=0
+	
+}
+
+
+
+
+function actualizarFechasTabla($conexion){
+						
+				$sql="SELECT * FROM cuota_alumna";
+
+				$consulta=mysqli_query($conexion, $sql);
+				$i = 0 ;
+                while($fila=mysqli_fetch_assoc($consulta)){
+					$i++;
+					$nuevaFecha = date('Y-m-d',$fila['fecha_pago']);
+					
+
+					echo $nuevaFecha;
+                	
+
+                	echo "<br>";
+
+
+				
+					
+				}
+
 	
 }
 

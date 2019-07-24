@@ -36,8 +36,10 @@ include("../includes/menu-top-alumnas-sin-buscador.php");
             <!--  <h3 class="center-align">Panel de administracion</h3>-->
             <h4 class="left-align">MENU</h4>
             <ul class="left-align no-margin">
-            <li><h5><a href="index.php">Alta alumna</a></h5></li>
+            <li><h5><a href="index.php">Alta alumno</a></h5></li>
                 <li><h5><a href="visualizar_ingresos.php">Generar reportes</a></h5></li>
+                <li><h5><a href="listado_deudores.php">Deudores</a></h5></li>
+                <li><h5><a href="alumnas_eliminadas.php">Alumn@as eliminadas</a></h5></li>
             </ul>
           </div>
       </div>

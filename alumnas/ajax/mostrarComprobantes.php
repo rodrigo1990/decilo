@@ -47,7 +47,7 @@ echo '<div class="col l2">
 
 $sql="SELECT cuota_alumna.*, concepto.concepto 
 FROM cuota_alumna INNER JOIN concepto ON cuota_alumna.id_concepto=concepto.id_concepto
- WHERE cuota_alumna.id_alumna=$id_alumna
+ WHERE cuota_alumna.id_alumna=$id_alumna AND esta_paga = 1 AND cuota_alumna.id_concepto!=1
 AND cuota_alumna.id_grupo=$id_grupo ORDER BY cuota_alumna.fecha_pago DESC";
 
 echo  '<h2>Otros conceptos: '.$grupo.' / '.$sede.'</h2>';
@@ -67,7 +67,7 @@ $consulta=mysqli_query($conexion, $sql);
 while($fila=mysqli_fetch_assoc($consulta)){
 	
 	echo '<div class="row">
-			<div class="col l3">'.date("d-m-Y",$fila['fecha_pago']).'
+			<div class="col l3">'.date("d-m-Y",strtotime($fila['fecha_pago'])).'
 			</div>
 			<div class="col l3">$'.$fila['monto'].'
 			</div>

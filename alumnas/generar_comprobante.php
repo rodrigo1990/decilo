@@ -10,7 +10,27 @@ $fila=mysqli_fetch_assoc($consulta);
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	
-	$id_cuota=generarComprobante($conexion,$conexion2, $_POST['id_alumna'], $_POST['mes'], $_POST['anio'], $_POST['monto'], $_POST['id_concepto'], $_POST['actividad'], $_POST['fecha_pago'] );
+	$id_cuota=generarComprobante($conexion,$conexion2, $_POST['id_alumna'], $_POST['mes'], $_POST['anio'], $_POST['monto'], $_POST['id_concepto'], $_POST['actividad'], $_POST['fecha_pago'], $_POST['deuda'] );
+
+	echo $id_cuota;
+	echo "<br>";
+	echo  $_POST['id_alumna'];
+	echo "<br>";
+	echo $_POST['mes'];
+	echo "<br>";
+	echo $_POST['anio'];
+	echo "<br>";
+	echo $_POST['monto'];
+	echo "<br>";
+	echo $_POST['id_concepto'];
+	echo "<br>";
+	echo $_POST['actividad'];
+	echo "<br>";
+	echo $_POST['fecha_pago'];
+	echo "<br>";
+	echo $_POST['deuda'];
+
+
 	
 	if(isset($_POST['enviar']) && $_POST['email']!=""){
 	
@@ -48,8 +68,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 						 } 
 						 
 	}//fin isset enviar
-	
-	echo "<script>document.location.href='imprimir_comprobante.php?id_cuota=".$id_cuota."'</script>";	
+	if($_POST['deuda']!="deuda"){
+		echo "<script>document.location.href='imprimir_comprobante.php?id_cuota=".$id_cuota."'</script>";	
+	}
 }
 
 ?>
@@ -99,16 +120,24 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 
 
-   <br />
    <label>Concepto</label><br/>
-   <select name="id_concepto">
+   <select name="id_concepto" id="id_concepto">
    	<?php generarConceptos($conexion); ?>
    </select><br/>
+   <div id="deuda-cont" style="display:none;">
+   	<input type="checkbox" name="deuda" id="deuda-check" value="deuda" > ¿Generar deuda ? 
+   </div>
     <label>Monto</label><br>
-    <input type="number" name="monto" min="1" placeholder="$0.00" step="any" />
+    <input type="number" id="monto" name="monto" min="1" placeholder="$0.00" step="any" />
+    <br>
+
     <input type="hidden" name="id_alumna" value="<?php echo $fila['id_alumna'] ?>" /><br />
-    <label>Enviar por e-mail a:<input type="checkbox" value="si" name="enviar" /></label><br />
-    <input type="text" name="email" value="<?php echo $fila['mail']; ?>" /><br><br>
+
+    <label for="enviar">Enviar por e-mail a:</label>
+    <input type="checkbox" value="si" name="enviar" />
+    <br />
+    <input type="text" name="email" value="<?php echo $fila['mail']; ?>" /><br>
+    <p style="font-size:10px">Ingrese multiples direcciones anteponiendo la coma, por ejemplo: info@decilo.com.ar,mailen@gmail.com</p>
     <button class="waves-effect waves-light btn">CONFIRMAR</button>
 </form>
 </div>
@@ -119,6 +148,28 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
    $(document).ready(function(){
     $('select').formSelect();
   });
+
+   $("#id_concepto").change(function(){
+
+   		var concepto = $("#id_concepto").val();
+
+   		if(concepto==2 || concepto==3){
+   			$("#deuda-cont").show();
+   		}else{
+   			$("#deuda-cont").hide();
+   		}
+
+   });
+
+   $('#deuda-check').change(function() {
+        if($(this).is(":checked")) {
+            $("#monto").prop('disabled',true);
+        }else{
+        	$("#monto").prop('disabled',false);
+        }
+    });
+
+
 </script>
 </body>
 </html>
