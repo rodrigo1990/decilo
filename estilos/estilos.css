@@ -247,3 +247,9 @@ textarea{
 a.eliminarActividad{
     font-size:2rem;
 }
+
+
+.actividades ul li {
+    margin-left:15px;
+    float:left;
+}

@@ -26,7 +26,7 @@ while($fila=mysqli_fetch_assoc($consulta)){
 $meses_pagos[$fila['mes']]=$fila['monto'];	
 }
 
- echo  '<h2>Cuotas '.$grupo.' / '.$sede.'</h2>';
+ echo  '<h2>Cuotas '.$grupo.' / '.$sede.'<a style="cursor:pointer" onClick="eliminarActividad('.$id_grupo.','.$id_alumna.')" class="eliminarActividad">Eliminar Actividad</a></h2></h2>';
 for($i=1; $i<=12; $i++){
 	
    
@@ -41,7 +41,6 @@ echo '<div class="col l2">
        </div>   
     </div>
 </div> ';
-	
 	
 }
 

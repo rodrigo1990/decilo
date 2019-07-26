@@ -48,7 +48,7 @@ include("../includes/menu-top-alumnas.php");
           					Grupo
           				</th>
           				<th>
-          					Ingresar
+          					Ver alumnos
           				</th>
           			</tr>
           		</thead>
@@ -63,7 +63,7 @@ include("../includes/menu-top-alumnas.php");
 						<td><?php  echo $fila['grupo']?></td>
 						<td>
 							<a href="grupo-detalle.php?id=<?php  echo $fila['id_grupo']?>&grupo=<?php  echo $fila['grupo']?>">
-								INGRESAR
+								Ver alumnos
 							</a>
 							
 								

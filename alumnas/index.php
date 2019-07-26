@@ -80,10 +80,7 @@ include("../includes/menu-top-alumnas.php");
                     <label>Celular</label>
                     <input type="text" name="celular" value="<?php echo $fila['celular'] ?>"  /><br />   
                    
-                     <label>Actividad</label>
-                    <select name="actividad" id="actividad" onChange="mostrarComprobantes(<?php echo $_GET['id_alumna'] ?>)">
-                        <?php $select=generarActividades($conexion, $fila['id_alumna']); ?>
-                    </select>
+                     
                    <br />
                     <label>Aclaraciones</label>
                     <input type="text" name="aclaraciones"  value="<?php echo $fila['aclaraciones'] ?>"  /><br />
@@ -92,9 +89,37 @@ include("../includes/menu-top-alumnas.php");
 
                 </form>
                 <br />
-                  <button  class="waves-effect waves-light btn" style="color:white !important;" id="generar_comprobante" onClick="window.open('generar_comprobante.php?id_alumna=<?php echo $_GET['id_alumna'] ?>','Comprobante','width=400,height=500')">Generar Comprobante</button>
+                <button  class="waves-effect waves-light btn" style="color:white !important;" id="generar_comprobante" onClick="window.open('inscribir_actividad.php?id_alumna=<?php echo $_GET['id_alumna'] ?>','Comprobante','width=400,height=400')">Inscribir actividad</button>
                     <br><br>
+                 
                   <button class="waves-effect waves-light btn" onClick="eliminarAlumna(<?php echo $_GET['id_alumna'] ?>)"> Eliminar alumn@</button>
+                 
+
+                  <div class="row actividades">
+                  
+
+                      <h4>Generar comprobantes</h4>
+
+                        <?php generarActividades($conexion, $_GET['id_alumna']) ?>          
+
+        
+                    <br><br>
+                     <!-- <button  class="waves-effect waves-light btn" style="color:white !important;" id="generar_comprobante" onClick="window.open('generar_comprobante.php?id_alumna=<?php echo $_GET['id_alumna'] ?>','Comprobante','width=400,height=800')">Generar Comprobante</button>
+                     -->
+                    
+
+                    <h4>Actividades</h4>
+
+                    <select name="actividad" id="actividad" onChange="mostrarComprobantes(<?php echo $_GET['id_alumna'] ?>)">
+                        <?php listarActividades($conexion, $fila['id_alumna']); ?>
+                    </select>
+
+                    <br><br>
+                  
+
+                  </div>
+
+
                 <div id="comprobantes" class='last-row'>
                 <?php
 				
@@ -105,7 +130,7 @@ include("../includes/menu-top-alumnas.php");
        
                     
                 }else{
-					mostrarComprobantes($conexion, $_GET['id_alumna'], 0);
+					//mostrarComprobantes($conexion, $_GET['id_alumna'], 0);
 					
 				}// fin isset id_grupo
                 ?>
@@ -168,6 +193,9 @@ include("../includes/menu-top-alumnas.php");
 <script type="text/javascript" src="js/funciones.js"></script>
 <script>
     
+    
+
+
     function buscarAlumnas(){
 
     var alumnaBuscada = $("#busqueda").val();
@@ -194,11 +222,7 @@ include("../includes/menu-top-alumnas.php");
 
  function eliminarAlumna(idAlumno){
 
-
-    alert(idAlumno);
-
     
-
             $.ajax({
             data:"idAlumna="+ idAlumno,
             url:'ajax/eliminarAlumna.php',
@@ -216,7 +240,9 @@ include("../includes/menu-top-alumnas.php");
                             url:'ajax/pagarDeuda.php',
                             type:'post',
                             success:function(response){
-                                alert("¡Alumn@ eliminado con exito!");         
+                                alert("¡Alumn@ eliminado con exito!"); 
+                                window.location.href = "index.php";
+        
 
                             }
                             });
@@ -232,6 +258,43 @@ include("../includes/menu-top-alumnas.php");
 
         
 }
+
+function eliminarActividad(grupo,alumna){
+     $.ajax({
+            data:{idAlumna:alumna,idGrupo:grupo},
+            url:'ajax/eliminar_actividad.php',
+            type:'post',
+            success:function(response){
+                if(response==true){
+                    alert("¡Alumn@ eliminado con exito!");
+                }else{
+                    var c = confirm('Est@ alumn@ tiene cuotas adeudadas, si prosigue, las deudas se tomaran como pagadas.');
+
+                    if(c ==true){
+
+                         $.ajax({
+                            data:{idAlumna: alumna,grupo:grupo},
+                            url:'ajax/pagarDeuda.php',
+                            type:'post',
+                            success:function(response){
+                                alert("¡Alumn@ eliminado con exito!");
+                                 location.reload();     
+
+                            }
+                            });
+
+
+                    }else{
+
+                    }
+                }
+
+
+            }
+            });
+
+}
+
 </script>
 <script>
 	 $(document).ready(function(){

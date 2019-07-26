@@ -4,21 +4,69 @@ include("../includes/verificarSesion.php");
 require_once("inc/conexion.php");
 require_once("inc/funciones.php");
 
+/********LISTAR MESES COMPROBANTES *********/
+
+$sqlMeses = "
+	SELECT mes,anio
+	FROM cuota_alumna
+	WHERE id_alumna = ".$_GET['id_alumna']." AND id_grupo = ".$_GET['id_grupo']." AND esta_paga = 0 AND id_concepto = 1
+	ORDER BY  id_cuota ASC
+	
+";
+
+$consultaMeses = mysqli_query($conexion, $sqlMeses);
+
+$consultaMeses2 = mysqli_query($conexion, $sqlMeses);
+
+
+
+
+
+/****BUSCAR EXISTENCIAS DE GRUPO*****/
+$id_grupo = $_GET['id_grupo'];
+
+$sqlGrupo = "SELECT grupo 
+			 FROM grupo
+			 WHERE id_grupo = $id_grupo";
+
+
+$consultaGrupo = mysqli_query($conexion, $sqlGrupo);
+
+$filaGrupo=mysqli_fetch_assoc($consultaGrupo); 
+
+
+
+
 $sql="SELECT * FROM alumna WHERE id_alumna=".$_GET['id_alumna'];
 $consulta=mysqli_query($conexion, $sql);
 $fila=mysqli_fetch_assoc($consulta);
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
+
+	if($_POST['id_concepto'] == "2" OR $_POST['id_concepto'] == "3" ){
+		$_POST['monto'] = 0.00;
+	}
+
+	if(isset($_POST['deuda'])){
+		$deuda = $_POST['deuda'];
+	}else{
+		$deuda = "paga";
+	}
+
+
+	$fechaComprobante = explode("/",$_POST['comprobante']);
+
+	$mes = $fechaComprobante[0];
+	$anio = $fechaComprobante[1];
+
+
+	$conexion2= 0 ;
 	
-	$id_cuota=generarComprobante($conexion,$conexion2, $_POST['id_alumna'], $_POST['mes'], $_POST['anio'], $_POST['monto'], $_POST['id_concepto'], $_POST['actividad'], $_POST['fecha_pago'], $_POST['deuda'] );
+	$id_cuota=generarComprobante($conexion,$conexion2, $_POST['id_alumna'], $mes, $anio, $_POST['monto'], $_POST['id_concepto'], $_POST['actividad'], $_POST['fecha_pago'], $deuda );
 
 	echo $id_cuota;
 	echo "<br>";
 	echo  $_POST['id_alumna'];
-	echo "<br>";
-	echo $_POST['mes'];
-	echo "<br>";
-	echo $_POST['anio'];
 	echo "<br>";
 	echo $_POST['monto'];
 	echo "<br>";
@@ -28,7 +76,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	echo "<br>";
 	echo $_POST['fecha_pago'];
 	echo "<br>";
-	echo $_POST['deuda'];
+	echo $deuda;
 
 
 	
@@ -68,8 +116,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 						 } 
 						 
 	}//fin isset enviar
-	if($_POST['deuda']!="deuda"){
+	if($deuda!="deuda"){
 		echo "<script>document.location.href='imprimir_comprobante.php?id_cuota=".$id_cuota."'</script>";	
+	}else{
+		echo "<script>alert('Deuda generada ' ) </script>";
 	}
 }
 
@@ -87,23 +137,44 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 <body class="genComprobante">
   <div class="container">
 <h1>Alumna: <?php echo $fila['nombre']; ?></h1>
+<h1>GRUPO : <?php echo $filaGrupo['grupo'] ?></h1>
 <form method="post">
 	<label>Fecha de pago</label><br>
     <input type="date" name="fecha_pago" value="<?php echo date("Y-m-d") ?>" /><br>
-    <label>Mes</label><br>
-    <select name="mes">
-    	<?php
-		for($i=1; $i<=12; $i++){
-			if($i==date("n")){
-				echo '<option selected value="'.$i.'">'.$meses_nombre[$i].'</option>';	
+    <div id="comprobante-cont">
+	    <label>Comprobante</label><br>
+	    <select name="comprobante" id="comprobante">
+	    	<?php
+
+	    	$filaMeses2=mysqli_fetch_assoc($consultaMeses2);
+
+
+	    	if($filaMeses2['mes']){
+
+
+				while($filaMeses=mysqli_fetch_assoc($consultaMeses)){
+
+					echo "<option value=".$filaMeses['mes']."/".$filaMeses['anio'].">".$filaMeses['mes']." / ".$filaMeses['anio']." </option>";
+
+
+
+				}
+
 			}else{
-				echo '<option value="'.$i.'">'.$meses_nombre[$i].'</option>';	
+
+				for($i=1; $i<=12; $i++){
+				if($i==date("n")){
+					echo '<option selected value="'.$i.' / '.date('Y').'">'.$i.'/ '.date(Y).'</option>';	
+				}else{
+					echo '<option value="'.$i.' / '.date('Y').'">'.$i.'/ '.date(Y).'</option>';	
+				}
 			}
-		}
-		?>
-    </select><br>
-    <label>Año</label><br>
-    <input type="text" name="anio" value="<?php echo date("Y"); ?>" /><br />
+			}
+			?>
+	    </select>
+    </div><br>
+    <!--  <label>Año</label><br>
+    <input type="text" name="anio" value="<?php echo date("Y"); ?>" /><br />-->
     
       <label>Sede</label><br>
         <select name="id_sede" id="id_sede" onChange="recargarGrupos()">
@@ -111,12 +182,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         	<?php generarSedes($conexion); ?>
         </select>
          <br />
-         <label>Actividad</label><br>
-          <select name="actividad" id="actividad">
-    
-          <?php generarGrupos($conexion); ?>
-    
-          </select><br>
+
+
+         <input type="hidden" name="actividad" id="actividad" value="<?php echo $id_grupo ?>">
+          
 
 
 
@@ -124,6 +193,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
    <select name="id_concepto" id="id_concepto">
    	<?php generarConceptos($conexion); ?>
    </select><br/>
+
+	<label for=""></label>
+
+
+
    <div id="deuda-cont" style="display:none;">
    	<input type="checkbox" name="deuda" id="deuda-check" value="deuda" > ¿Generar deuda ? 
    </div>
@@ -153,10 +227,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
    		var concepto = $("#id_concepto").val();
 
-   		if(concepto==2 || concepto==3){
+   		if(concepto==2 || concepto==3 || concepto==4 ){
    			$("#deuda-cont").show();
+   			$("#comprobante-cont").hide();
    		}else{
    			$("#deuda-cont").hide();
+   			$("#comprobante-cont").show();
    		}
 
    });

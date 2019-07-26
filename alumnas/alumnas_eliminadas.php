@@ -126,7 +126,6 @@ generarDeudas($conexion);
  function reincorporarAlumno(idAlumno){
 
 
-    alert(idAlumno);
 
     
 

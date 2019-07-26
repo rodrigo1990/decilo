@@ -3,16 +3,24 @@ function mostrarComprobantes(id_alumna){
 	
 	num=document.getElementById("actividad").selectedIndex
 	id=document.getElementById("actividad")[num].value;
+
+	$("#comprobantes").empty();
+
+
+	if(id!=0){
 	
 	$.ajax({
 				data:"id="+ id+"&id_alumna="+id_alumna,
 				url:'ajax/mostrarComprobantes.php',
 				type:'get',
 				success:function(response){					
-					
+						
+
 					$("#comprobantes").html(response);
 				}
 				});
+
+	}
 	
 	
 }

@@ -46,10 +46,10 @@ include("../includes/menu-top-alumnas.php");
           		<thead>
           			<tr>
           				<th>
-          					Nombre
+          					Alumno
           				</th>
                   <th>
-                    Ingresar
+                    Detalle alumno
                   </th>
           			</tr>
           		</thead>
@@ -64,7 +64,7 @@ include("../includes/menu-top-alumnas.php");
 						<td><?php  echo $fila['nombre']?></td>
             <td>
 							<a href="index.php?id_alumna=<?php echo $fila['id_alumna'] ?>">
-								INGRESAR
+								Detalle
 							</a>
               </td>
 							
