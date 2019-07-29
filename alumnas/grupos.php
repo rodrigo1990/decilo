@@ -28,9 +28,9 @@ include("../includes/menu-top-alumnas.php");
 
 			
 				<?php 
-				  $sql="SELECT DISTINCT GRU.grupo,CA.id_grupo
-		    	  FROM cuota_alumna CA JOIN grupo GRU ON CA.id_grupo  = GRU.id_grupo
-		    	  WHERE CA.id_grupo != 0 ";
+				  $sql="SELECT DISTINCT GRU.grupo,INS.id_grupo
+		    	  FROM inscripcion INS JOIN grupo GRU ON INS.id_grupo  = GRU.id_grupo
+		    	  WHERE INS.id_grupo != 0 AND eliminada = 0";
 				$consulta=mysqli_query($conexion, $sql);
 
 			

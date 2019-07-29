@@ -15,16 +15,54 @@ $consulta_grupos=mysqli_query($conexion, $sql);
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
  
 
-	$sql  = "INSERT INTO inscripcion(id_alumna,id_grupo)
-			VALUES(".$_GET['id_alumna'].",".$_POST['grupo'].");
-			";
 
-	$consulta_grupos=mysqli_query($conexion, $sql);
+  $sql = "SELECT *
+          FROM inscripcion
+          WHERE id_alumna = ".$_GET['id_alumna']." AND id_grupo = ".$_POST['grupo']." AND eliminada = 1";
+
+$consulta_grupos=mysqli_query($conexion, $sql);
 
 
-	echo "<script>alert('Inscripcion realizada')</script>";
+$fila=mysqli_fetch_assoc($consulta_grupos);
 
-	echo "<script>window.close();</script>";
+
+if($fila['id']==null){
+
+  $sql  = "INSERT INTO inscripcion(id_alumna,id_grupo)
+      VALUES(".$_GET['id_alumna'].",".$_POST['grupo'].");
+      ";
+
+  $consulta_grupos=mysqli_query($conexion, $sql);
+
+
+
+  echo "<script>alert('Inscripcion realizada')</script>";
+
+  echo "<script>window.close();</script>";
+
+}else{
+  
+  $sql = "UPDATE inscripcion
+          SET eliminada=0
+          WHERE id_alumna = ".$_GET['id_alumna']." AND id_grupo = ".$_POST['grupo']."";
+
+  $consulta_grupos=mysqli_query($conexion, $sql);
+
+  $sql = "UPDATE cuota_alumna
+          SET eliminada=0
+          WHERE id_alumna = ".$_GET['id_alumna']." AND id_grupo = ".$_POST['grupo']."";
+
+  $consulta_grupos=mysqli_query($conexion, $sql);
+
+   echo "<script>alert('Inscripcion realizada')</script>";
+
+  echo "<script>window.close();</script>";
+
+}
+
+
+
+	
 
 }
 
@@ -79,6 +117,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             		alert("La alumna ya se encuentra inscripta.")
             	}else{
             		$("#inscripcion").submit();
+                opener.document.location.href='index.php?id_alumna=<?php echo $fila['id_alumna'];?>';
+
             	}
 
             }

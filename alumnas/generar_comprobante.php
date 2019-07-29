@@ -14,10 +14,30 @@ $sqlMeses = "
 	
 ";
 
+
+$sqlContarMeses = "
+	
+	SELECT COUNT(*) as total
+	FROM cuota_alumna
+	WHERE id_alumna = ".$_GET['id_alumna']." AND id_grupo = ".$_GET['id_grupo']." AND esta_paga = 1 AND id_concepto = 1
+	ORDER BY  id_cuota ASC
+
+";
+
+
+$sqlUltimoAnio  ="SELECT * FROM cuota_alumna WHERE id_alumna = ".$_GET['id_alumna']." AND id_grupo = ".$_GET['id_grupo']." AND esta_paga = 1 AND id_concepto = 1 ORDER BY id_cuota DESC LIMIT 1";
+
+
+/**NO BORRAR !!! **********************************/
+
+$consultaContarMeses  = mysqli_query($conexion, $sqlContarMeses); 
+
 $consultaMeses = mysqli_query($conexion, $sqlMeses);
 
 $consultaMeses2 = mysqli_query($conexion, $sqlMeses);
 
+$consultaUltimoAnio = mysqli_query($conexion,$sqlUltimoAnio);
+/*************************************************/
 
 
 
@@ -44,7 +64,9 @@ $fila=mysqli_fetch_assoc($consulta);
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 	if($_POST['id_concepto'] == "2" OR $_POST['id_concepto'] == "3" ){
-		$_POST['monto'] = 0.00;
+		if(isset($_POST['deuda'])){
+			$_POST['monto'] = 0.00;
+		}
 	}
 
 	if(isset($_POST['deuda'])){
@@ -64,7 +86,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	
 	$id_cuota=generarComprobante($conexion,$conexion2, $_POST['id_alumna'], $mes, $anio, $_POST['monto'], $_POST['id_concepto'], $_POST['actividad'], $_POST['fecha_pago'], $deuda );
 
-	echo $id_cuota;
+	/*echo $id_cuota;
 	echo "<br>";
 	echo  $_POST['id_alumna'];
 	echo "<br>";
@@ -76,7 +98,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	echo "<br>";
 	echo $_POST['fecha_pago'];
 	echo "<br>";
-	echo $deuda;
+	echo $deuda;*/
 
 
 	
@@ -143,13 +165,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     <input type="date" name="fecha_pago" value="<?php echo date("Y-m-d") ?>" /><br>
     <div id="comprobante-cont">
 	    <label>Comprobante</label><br>
+	    <?php 
+
+	    	$filaUltimoAnio = mysqli_fetch_assoc($consultaUltimoAnio);
+
+
+	     ?>
 	    <select name="comprobante" id="comprobante">
 	    	<?php
 
 	    	$filaMeses2=mysqli_fetch_assoc($consultaMeses2);
 
+	    	$totalMeses=mysqli_fetch_assoc($consultaContarMeses);
 
-	    	if($filaMeses2['mes']){
+
+	    	if($filaMeses2['mes']  ){
 
 
 				while($filaMeses=mysqli_fetch_assoc($consultaMeses)){
@@ -162,14 +192,73 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 			}else{
 
-				for($i=1; $i<=12; $i++){
-				if($i==date("n")){
-					echo '<option selected value="'.$i.' / '.date('Y').'">'.$i.'/ '.date(Y).'</option>';	
-				}else{
-					echo '<option value="'.$i.' / '.date('Y').'">'.$i.'/ '.date(Y).'</option>';	
+
+				$y = 1;
+				if($totalMeses['total']==13){
+
+					$anioActual = date('Y') +1;
+
+					if($filaUltimoAnio['mes']==12){
+						//$anioActual += 1;
+					}
+
+						
+
+						for($i=$filaUltimoAnio['mes']+1; $i<=12; $i++){
+
+							$y++;
+								if($i==date("n")){
+									echo '<option selected value="'.$i.' / '.$anioActual.'">'.$i.'/ '.$anioActual.'</option>';	
+								}else{
+									echo '<option value="'.$i.' / '.$anioActual.'">'.$i.'/ '.$anioActual.'</option>';	
+								}
+
+
+						}
+
+						if($y!=12){
+
+							for($i=1; $i<=$y+2; $i++){
+
+								if($i==date("n")){
+									echo '<option selected value="'.$i.' / '.((int)$anioActual + 1).'">'.$i.'/ '.((int)$anioActual + 1).'</option>';	
+								}else{
+									echo '<option value="'.$i.' / '.((int)$anioActual + 1).'">'.$i.'/ '.((int)$anioActual + 1).'</option>';	
+								}
+
+
+						}	
+						}else{
+							for($i=1; $i<=12; $i++){
+							if($i==date("n")){
+								echo '<option selected value="'.$i.' / '.date('Y').'">'.$i.'/ '.date(Y).'</option>';	
+							}else{
+								echo '<option value="'.$i.' / '.date('Y').'">'.$i.'/ '.date(Y).'</option>';	
+							}
+
+						}
+							
+						}
+
+					}else{
+
+						for($i=1; $i<=12; $i++){
+							if($i==date("n")){
+								echo '<option selected value="'.$i.' / '.date('Y').'">'.$i.'/ '.date(Y).'</option>';	
+							}else{
+								echo '<option value="'.$i.' / '.date('Y').'">'.$i.'/ '.date(Y).'</option>';	
+							}
+
+						}
+												
+					}
+
 				}
-			}
-			}
+
+
+				
+			
+			
 			?>
 	    </select>
     </div><br>

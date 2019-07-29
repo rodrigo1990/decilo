@@ -228,9 +228,14 @@ include("../includes/menu-top-alumnas.php");
             url:'ajax/eliminarAlumna.php',
             type:'post',
             success:function(response){
-                if(response==true){
+                console.log(response);
+                if(response==1){
+
                     alert("¡Alumn@ eliminado con exito!");
-                }else{
+                    window.location.href = "index.php";
+
+                }else if(response==0){
+
                     var c = confirm('Est@ alumn@ tiene cuotas adeudadas, si prosigue, las deudas se tomaran como pagadas.');
 
                     if(c ==true){
@@ -249,8 +254,8 @@ include("../includes/menu-top-alumnas.php");
 
 
                     }else{
-
                     }
+                }else{
                 }
 
             }
@@ -264,10 +269,17 @@ function eliminarActividad(grupo,alumna){
             data:{idAlumna:alumna,idGrupo:grupo},
             url:'ajax/eliminar_actividad.php',
             type:'post',
-            success:function(response){
-                if(response==true){
+            success:function(resp){
+                console.log(resp);
+                
+                if(resp==1){
+
+                    console.log("alumno eliminado");
                     alert("¡Alumn@ eliminado con exito!");
-                }else{
+                    location.reload();
+
+                }else if(resp==0){
+
                     var c = confirm('Est@ alumn@ tiene cuotas adeudadas, si prosigue, las deudas se tomaran como pagadas.');
 
                     if(c ==true){
@@ -278,7 +290,7 @@ function eliminarActividad(grupo,alumna){
                             type:'post',
                             success:function(response){
                                 alert("¡Alumn@ eliminado con exito!");
-                                 location.reload();     
+                                 window.location.href = "index.php?id_alumna="+alumna+""; 
 
                             }
                             });
@@ -287,6 +299,7 @@ function eliminarActividad(grupo,alumna){
                     }else{
 
                     }
+                }else{
                 }
 
 

@@ -140,7 +140,7 @@ function generarComprobante($conexion,$conexion2, $id_alumna, $mes, $anio, $mont
 		}
 
 			$sql="INSERT INTO cuota_alumna(id_alumna, mes, anio, monto, id_concepto,  id_grupo, fecha_pago, eliminada, adeuda, esta_paga)
-						VALUES($id_alumna, $mesActual, $anioActual, 0,  $id_concepto,$id_grupo,null,0,$adeuda,$esta_paga)";
+						VALUES($id_alumna, $mesActual, $anioActual, $monto,  $id_concepto,$id_grupo,null,0,$adeuda,$esta_paga)";
 
 			$consulta=mysqli_query($conexion, $sql);
 		
@@ -216,7 +216,7 @@ function generarComprobante($conexion,$conexion2, $id_alumna, $mes, $anio, $mont
 			//ACTUALIZAR COMPROBANTE PAGADO
 			$sql = "UPDATE cuota_alumna
 					SET   monto = $monto, fecha_pago = '$fp',esta_paga=1, adeuda=0
-					WHERE id_alumna = $id_alumna AND mes = $mes AND anio = $anio AND id_concepto = $id_concepto AND id_grupo = $id_grupo";
+					WHERE id_alumna = $id_alumna AND mes = $mes AND anio = $anio AND id_concepto = 1 AND id_grupo = $id_grupo";
 
 			$consulta=mysqli_query($conexion, $sql);
 			//$id_cuota=mysqli_insert_id($conexion);
@@ -325,7 +325,7 @@ function generarActividades($conexion, $id_alumna, $option_sel=0){
 
 	$sql = "SELECT INS.id_grupo as id_grupo, GRUP.grupo as descripcion
 			FROM inscripcion INS JOIN grupo GRUP ON INS.id_grupo = GRUP.id_grupo
-			WHERE id_alumna = $id_alumna ";
+			WHERE id_alumna = $id_alumna AND INS.eliminada=0 ";
 
 	$consulta=mysqli_query($conexion, $sql);
 
@@ -368,7 +368,7 @@ function listarActividades($conexion, $id_alumna, $option_sel=0){
 
 	SELECT INS.id_grupo as id_grupo, GRUP.grupo as descripcion
 	FROM inscripcion INS JOIN grupo GRUP ON INS.id_grupo  = GRUP.id_grupo
-	WHERE id_alumna = $id_alumna
+	WHERE id_alumna = $id_alumna AND eliminada=0
 
 
     ";

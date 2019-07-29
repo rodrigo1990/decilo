@@ -31,7 +31,7 @@ include("../includes/menu-top-alumnas.php");
 				<?php 
         $id_grupo = $_GET['id'];
 				  $sql="SELECT DISTINCT AL.id_alumna,AL.nombre 
-          FROM `cuota_alumna` CA JOIN alumna AL ON CA.id_alumna = AL.id_alumna WHERE id_grupo = $id_grupo";
+          FROM `cuota_alumna` CA JOIN alumna AL ON CA.id_alumna = AL.id_alumna WHERE id_grupo = $id_grupo AND CA.eliminada = 0";
 				$consulta=mysqli_query($conexion, $sql);
 
 			

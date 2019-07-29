@@ -41,13 +41,14 @@ generarDeudas($conexion);
 			              <th>Actividad</th>
 			              <th>Concepto</th>
 			              <th>Mes adeudado</th>
+                    <th>Pagar</th>
 			              
 			          </tr>
 			        </thead>
 
 			        <tbody>
 						<?php 
-						  $sql="SELECT AL.nombre as nombre_alumna, GRU.grupo AS nombre_grupo, CA.mes, CA.anio, CON.concepto
+						  $sql="SELECT AL.id_alumna as id_alumna,CA.id_concepto as id_concepto,CA.id_cuota as id_cuota,AL.nombre as nombre_alumna, GRU.grupo AS nombre_grupo, CA.mes, CA.anio, CON.concepto
 				    	  FROM cuota_alumna CA JOIN alumna AL ON CA.id_alumna = AL.id_alumna 
 				    	  						JOIN grupo GRU ON CA.id_grupo = GRU.id_grupo
 				    	  						JOIN concepto CON ON CON.id_concepto = CA.id_concepto
@@ -62,6 +63,14 @@ generarDeudas($conexion);
 								<td><?php  echo $fila['nombre_grupo']?></td>
 								<td><?php  echo $fila['concepto']?></td>
 								<td><?php  echo $fila['mes']."/".$fila['anio']?></td>
+                <?php if($fila['id_concepto']=="2" OR $fila['id_concepto']=="3" ){ ?>
+                  <td><a onClick=" window.open('pagar_deuda.php?id_alumna=<?php echo $fila['id_alumna'] ?>&id_cuota=<?php echo $fila['id_cuota'] ?>','Comprobante','width=400,height=800')">Pagar</a></td>
+
+                <?php }else{ ?>
+                        
+                        <td>-</td>
+                
+                <?php } ?>
 							</tr>	
 						<?php
 							endwhile;

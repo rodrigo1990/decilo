@@ -5,7 +5,7 @@ require_once("../inc/conexion.php");
 
 	$sql = " SELECT id_grupo
 			FROM inscripcion
-			WHERE id_alumna = ".$_POST['id_alumna']." AND id_grupo = ".$_POST['id_grupo']." ";
+			WHERE id_alumna = ".$_POST['id_alumna']." AND id_grupo = ".$_POST['id_grupo']." AND eliminada= 0 ";
 
 	$consulta = mysqli_query($conexion, $sql);
 

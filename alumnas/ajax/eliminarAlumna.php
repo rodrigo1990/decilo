@@ -4,7 +4,6 @@ require_once("../inc/conexion.php");
 
 $idAlumna = $_POST['idAlumna'];
 
-
 $sql = "SELECT *
 		FROM cuota_alumna
 		WHERE id_alumna  = $idAlumna AND adeuda=1 ";
@@ -14,7 +13,8 @@ $consulta=mysqli_query($conexion, $sql);
 
 $fila=mysqli_fetch_assoc($consulta);
 
-if(!$fila){
+
+if($fila['id_cuota']==null){
 
 	$sql = "UPDATE alumna
 			SET eliminada=1
@@ -30,10 +30,13 @@ if(!$fila){
 	$consulta=mysqli_query($conexion, $sql);
 
 
-	return true;
+	echo "1";
 
 }else{
-	return false;
+	echo "0";
 }
+
+
+//return var_dump($fila['id_cuota']);
 
  ?>
