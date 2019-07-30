@@ -192,7 +192,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 			}else{
 
-
+				//si tiene doce meses pagos
 				$y = 1;
 				if($totalMeses['total']==13){
 
@@ -203,7 +203,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 					}
 
 						
-
+						//se crearan doce registros mas, a partir del ultimo pagado
 						for($i=$filaUltimoAnio['mes']+1; $i<=12; $i++){
 
 							$y++;
@@ -215,7 +215,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 
 						}
-
+						//una vez que se llegue a diciembre se crearan contemplando el mismo orden pero con un año
+						//adelantado.
 						if($y!=12){
 
 							for($i=1; $i<=$y+2; $i++){
@@ -227,7 +228,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 								}
 
 
-						}	
+						}//sino se mostraran doce meses correspondientes al año actual	
 						}else{
 							for($i=1; $i<=12; $i++){
 							if($i==date("n")){

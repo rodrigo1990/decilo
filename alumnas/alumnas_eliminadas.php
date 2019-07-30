@@ -33,7 +33,22 @@ generarDeudas($conexion);
             <div class="container container-esp"style="padding-bottom:150px">
             <div class="row">
                 <h1>Listado de deudores</h1>
+                <?php 
 
+                        $sql="SELECT id_alumna,nombre,fecha_nacimiento,mail,celular,colegio
+                          FROM alumna
+                          WHERE eliminada=1";
+
+                        $consulta2=mysqli_query($conexion, $sql);
+
+                        $fila2 = mysqli_fetch_assoc($consulta2);
+
+
+                        if(!$fila2){
+                 ?>
+                             <h2 style="color:lightGray;text-align: center;">NO HAY ALUMN@S ELIMINAD@S</h2>
+
+                  <?php  }else{ ?>   
              	<table class="stripped">
 			        <thead>
 			          <tr>
@@ -54,6 +69,7 @@ generarDeudas($conexion);
 				    	  WHERE eliminada=1";
 						$consulta=mysqli_query($conexion, $sql);
 
+
 					
 							while ($fila = mysqli_fetch_assoc($consulta)):
 						?>			
@@ -67,7 +83,16 @@ generarDeudas($conexion);
 							</tr>	
 						<?php
 							endwhile;
-						?>	         
+
+
+                        }    
+                            
+
+                            
+						?>	    
+
+                           
+                         
 			        </tbody>
 		      	</table>
 	            

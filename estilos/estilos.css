@@ -249,7 +249,7 @@ a.eliminarActividad{
 }
 
 
-.actividades ul li {
+.actividades #list ul li {
     margin-left:15px;
     float:left;
 }

@@ -30,6 +30,13 @@ if($fila['id_cuota']==null){
 	$consulta=mysqli_query($conexion, $sql);
 
 
+	$sql = "UPDATE inscripcion
+			SET eliminada=1
+			WHERE id_alumna  = $idAlumna ";
+
+	$consulta=mysqli_query($conexion, $sql);
+
+
 	echo "1";
 
 }else{

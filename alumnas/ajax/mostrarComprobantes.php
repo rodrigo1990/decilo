@@ -26,7 +26,7 @@ while($fila=mysqli_fetch_assoc($consulta)){
 $meses_pagos[$fila['mes']]=$fila['monto'];	
 }
 
- echo  '<h2>Cuotas '.$grupo.' / '.$sede.'<a style="cursor:pointer" onClick="eliminarActividad('.$id_grupo.','.$id_alumna.')" class="eliminarActividad">Eliminar Actividad</a></h2></h2>';
+ echo  '<h4>Cuotas '.$grupo.' / '.$sede.'<a style="cursor:pointer" onClick="eliminarActividad('.$id_grupo.','.$id_alumna.')" class="eliminarActividad">Eliminar Actividad</a></h4></h4>';
 for($i=1; $i<=12; $i++){
 	
    
@@ -49,7 +49,7 @@ FROM cuota_alumna INNER JOIN concepto ON cuota_alumna.id_concepto=concepto.id_co
  WHERE cuota_alumna.id_alumna=$id_alumna AND esta_paga = 1 AND cuota_alumna.id_concepto!=1
 AND cuota_alumna.id_grupo=$id_grupo ORDER BY cuota_alumna.fecha_pago DESC";
 
-echo  '<h2>Otros conceptos: '.$grupo.' / '.$sede.'</h2>';
+echo  '<h4 style="margin-top:190px;">Otros conceptos: '.$grupo.' / '.$sede.'</h4>';
 
 echo '<div class="row">
 			<div class="col l3">Fecha

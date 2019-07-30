@@ -376,11 +376,7 @@ function listarActividades($conexion, $id_alumna, $option_sel=0){
 
 	while($fila=mysqli_fetch_assoc($consulta)){
     	
-		echo "<option value='".$fila['id_grupo']."'>
-				
-				".$fila['descripcion']."
-
-		</option>";
+		echo "<option value='".$fila['id_grupo']."'>".$fila['descripcion']."</option>";
 	}//fin while
 
 
@@ -479,7 +475,7 @@ function mostrarComprobantes($conexion, $id_alumna, $id_grupo){
                 $meses_pagos[$fila['mes']]=$fila['monto'];  
                 }
 
-                 echo  '<h2>'.$grupo.' / '.$sede.' <a style="cursor:pointer" onClick="eliminarActividad('.$id_grupo.','.$id_alumna.')" class="eliminarActividad">Eliminar Actividad</a></h2>';
+                 echo  '<h4>'.$grupo.' / '.$sede.' <a style="cursor:pointer" onClick="eliminarActividad('.$id_grupo.','.$id_alumna.')" class="eliminarActividad">Eliminar Actividad</a></h4>';
                 for($i=1; $i<=12; $i++){
                     
                    
@@ -505,7 +501,7 @@ AND cuota_alumna.id_concepto <> 1 ORDER BY cuota_alumna.fecha_pago DESC";
 $consulta=mysqli_query($conexion, $sql);
 
 if(mysqli_num_rows($consulta)!=0){
-echo  '<h2>Otros conceptos: '.$grupo.' / '.$sede.'</h2>';
+echo  '<h4>Otros conceptos: '.$grupo.' / '.$sede.'</h4>';
 
 echo '<table>
 		<tr>

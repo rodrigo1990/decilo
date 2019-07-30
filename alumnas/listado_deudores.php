@@ -34,6 +34,25 @@ generarDeudas($conexion);
             <div class="row">
                 <h1>Listado de deudores</h1>
 
+                <?php 
+
+                        $sql="SELECT AL.id_alumna as id_alumna,CA.id_concepto as id_concepto,CA.id_cuota as id_cuota,AL.nombre as nombre_alumna, GRU.grupo AS nombre_grupo, CA.mes, CA.anio, CON.concepto
+                FROM cuota_alumna CA JOIN alumna AL ON CA.id_alumna = AL.id_alumna 
+                            JOIN grupo GRU ON CA.id_grupo = GRU.id_grupo
+                            JOIN concepto CON ON CON.id_concepto = CA.id_concepto
+                WHERE CA.adeuda=1 and CA.eliminada=0";
+
+                        $consulta2=mysqli_query($conexion, $sql);
+
+                        $fila2 = mysqli_fetch_assoc($consulta2);
+
+
+                        if(!$fila2){
+                 ?>
+                             <h2 style="color:lightGray;text-align: center;">NO HAY ALUMN@S CON PAGOS PENDIENTES</h2>
+
+                  <?php  }else{ ?>  
+
              	<table class="stripped">
 			        <thead>
 			          <tr>
@@ -77,7 +96,7 @@ generarDeudas($conexion);
 						?>	         
 			        </tbody>
 		      	</table>
-	            
+	            <?php } ?>
             </div>
         </div>
       </div>
