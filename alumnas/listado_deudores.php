@@ -12,6 +12,8 @@ include("../includes/menu-top-alumnas.php");
 
 generarDeudas($conexion);
 
+
+
   ?>
 
   <div class="row" style="height:100vh;">
@@ -32,9 +34,12 @@ generarDeudas($conexion);
         <div class="row">
             <div class="container container-esp"style="padding-bottom:150px">
             <div class="row">
+
                 <h1>Listado de deudores</h1>
 
                 <?php 
+
+                $conexion=mysqli_connect("localhost", "root", "", "edbplata_alumnas");
 
                         $sql="SELECT AL.id_alumna as id_alumna,CA.id_concepto as id_concepto,CA.id_cuota as id_cuota,AL.nombre as nombre_alumna, GRU.grupo AS nombre_grupo, CA.mes, CA.anio, CON.concepto
                 FROM cuota_alumna CA JOIN alumna AL ON CA.id_alumna = AL.id_alumna 

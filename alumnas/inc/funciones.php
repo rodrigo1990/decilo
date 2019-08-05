@@ -9,11 +9,49 @@ function generarDeudas($conexion){
 	$mesActual = date('m');
 	$anioActual = date('Y');
 
-	$sql = "UPDATE cuota_alumna
-				SET adeuda = 1
-				WHERE mes  = '$mesActual' AND anio = '$anioActual' AND esta_paga=0 ";
+	$sql = "SELECT id_alumna,id_grupo
+			FROM inscripcion INS
+			WHERE eliminada = 0 AND NOT EXISTS (SELECT 1
+						  					FROM cuota_alumna CA
+						  					WHERE mes = $mesActual AND anio = $anioActual AND INS.id_grupo = CA.id_grupo AND INS.id_alumna = CA.id_alumna); ";
 
-	$consulta=mysqli_query($conexion, $sql);
+	$existe_consulta=mysqli_query($conexion, $sql);
+
+	$existe_deudor = mysqli_fetch_assoc($existe_consulta);
+
+	if($existe_deudor['id_alumna']){
+
+
+		$consulta=mysqli_query($conexion, $sql);
+
+		$sql="";
+
+		while($deudor = mysqli_fetch_assoc($consulta)){
+
+
+			$id_alumna =$deudor['id_alumna'];
+			//echo "<br>";
+			$id_grupo = $deudor['id_grupo'];
+
+			//echo $id_alumna;
+			//echo $id_grupo;
+
+			$sql .= "INSERT INTO cuota_alumna(id_alumna,mes,anio,monto,id_concepto,id_grupo,fecha_pago,eliminada,adeuda,esta_paga)
+				VALUES ($id_alumna,$mesActual,$anioActual,0.00,1,$id_grupo,null,0,1,0);";
+
+				
+
+
+
+		}
+
+
+
+		$consulta=mysqli_multi_query($conexion, $sql);
+		mysqli_close($conexion);
+		sleep(5);
+
+	}
 
 	
 
@@ -134,152 +172,134 @@ function generarComprobante($conexion,$conexion2, $id_alumna, $mes, $anio, $mont
 		if($deuda=="deuda"){
 			$esta_paga = 0;
 			$adeuda = 1;	
+			$monto = 0;
 		}else{
 			$esta_paga = 1;
 			$adeuda = 0;
 		}
 
-			$sql="INSERT INTO cuota_alumna(id_alumna, mes, anio, monto, id_concepto,  id_grupo, fecha_pago, eliminada, adeuda, esta_paga)
-						VALUES($id_alumna, $mesActual, $anioActual, $monto,  $id_concepto,$id_grupo,null,0,$adeuda,$esta_paga)";
+	}	
 
-			$consulta=mysqli_query($conexion, $sql);
+	if($id_concepto=="4"){
 		
-
+		$monto=-$monto;
 	}
 
 
-	if($id_concepto==1){	
 
-			//BUSCO QUE EXISTAN COMPROBANTES QUE HAGAN REFERENCIA A AL ACTIVIDAD/GRUPO ESCOGIDA
-			$sql="SELECT * 
-				FROM cuota_alumna
-				WHERE id_alumna=$id_alumna AND id_grupo=$id_grupo AND id_concepto = 1";
+				$sql = "SELECT * FROM cuota_alumna
+					WHERE id_alumna = $id_alumna AND mes = $mes
+												 AND anio =  $anio
+												 AND id_concepto = $id_concepto
+												 AND id_grupo=$id_grupo";
 
 				$consulta=mysqli_query($conexion, $sql);
 
-				$fila = mysqli_fetch_assoc($consulta);
+				$fila =  mysqli_fetch_assoc($consulta);
 
-				//CUENTO LA CANTIDAD DE REGISTROS QUE CORRESPONDAN A LA ACTIVIDAD Y AL ALUMNO, SI LA CANTIDAD ES 13
-				//SIGNIFICA QUE EL ALUMNO A COMPLETADO EL PRIMER Aﾃ前 Y ES NECESARIO CREAR 13 REGISTROS MAS.
-				$sql2="SELECT COUNT(*) as cantidad
-				FROM cuota_alumna
-				WHERE id_alumna=$id_alumna AND id_grupo=$id_grupo AND esta_paga=1 AND id_concepto = 1";
-
-				$consulta2=mysqli_query($conexion, $sql2);
-
-				$fila2 = mysqli_fetch_assoc($consulta2);
-
-
-				//SOLAMENTE SI NO EXISTE, VOY A GENERAR TODOS LOS COMPROBANTES QUE DEBEN PAGARSE
-				//O SI EL ALUMNO HA CURSADO LOS 13 MESES DE CURSO
-				if(!$fila OR $fila2['cantidad']==13){
-
-					for($i=0; $i<=12;$i++){
-
-						if($mesActual==0){
-							$mesActual=1;
-						}
+				if(!$fila['id_cuota']){
 
 
 
-						$sql="INSERT INTO cuota_alumna(id_alumna, mes, anio, monto, id_concepto,  id_grupo, fecha_pago, eliminada, adeuda, esta_paga)
-							VALUES($id_alumna, $mesActual, $anioActual, 0,  $id_concepto,$id_grupo,null,0,0,0)";
+
+				$sql="INSERT INTO cuota_alumna(id_alumna, mes, anio, monto, id_concepto,  id_grupo, fecha_pago, eliminada, adeuda, esta_paga)
+					VALUES($id_alumna, $mesActual, $anioActual, $monto,  $id_concepto,$id_grupo,'$fecha_pago',0,0,1)";
+
+				$consulta=mysqli_query($conexion, $sql);
+
+				$id_cuota=mysqli_insert_id($conexion);	
+
+
+					//DEVOLVER INFORMACION DEL ALUMNO PARA GENERAR COMPROBANTE
+					/*$sql = "SELECT nombre,mail
+							FROM alumna 
+							WHERE id_alumna=$id_alumna";
+
+					$consulta=mysqli_query($conexion, $sql);
+					$fila=mysqli_fetch_assoc($consulta);
+
+					$observacion = "Pago realizado por la alumna: ".$fila['nombre']." mail:".$fila['mail']."";
+
+					$sql="INSERT INTO ingreso(concepto,fecha,monto,id_categoria,observacion)
+						  VALUES('Mensualidad Alumna','$fecha_pago',$monto,8,'$observacion')";
+
+					$consulta=mysqli_query($conexion2,$sql);
+
+
+					if($id_concepto=="4"){
+
+						$sql = "SELECT nombre,mail
+								FROM alumna 
+								WHERE id_alumna=$id_alumna";
 
 						$consulta=mysqli_query($conexion, $sql);
+						$fila=mysqli_fetch_assoc($consulta);
 
-						$mesActual+=1;
+						$observacion = "Devolucion realizada por la alumna: ".$fila['nombre']." mail:".$fila['mail']."";
 
-						if($mesActual>=13){
+						$sql="INSERT INTO egreso(concepto,fecha,monto,id_categoria,observacion)
+							  VALUES('Devolucion Mensualidad Alumna','$fecha_pago',$monto,8,'$observacion')";
 
-							$anioActual+=1;
-							$mesActual=00;
-						}
-
-				}//FOR
-
-			}
-
-	}
+						$consulta=mysqli_query($conexion2,$sql);
+					}*/
 
 
-	if($id_concepto!=4){
 
-		if($deuda!="deuda"){
+				}else{
+				
+				$sql = "UPDATE cuota_alumna
+						
+						
+						SET id_alumna = $id_alumna, mes = $mes,
+												  anio =  $anio,
+												  id_concepto = $id_concepto,
+												  id_grupo=$id_grupo,
+												  monto = $monto,
+												  fecha_pago = '$fecha_pago',
+												  eliminada = 0,
+												  adeuda = 0,
+												  esta_paga = 1						
+
+						WHERE id_alumna = $id_alumna AND mes = $mes
+												 AND anio =  $anio
+												 AND id_concepto = $id_concepto
+												 AND id_grupo=$id_grupo";
+
+				$consulta=mysqli_query($conexion, $sql);
+
+				$sql = "SELECT * 
+				  		FROM cuota_alumna
+						WHERE id_alumna = $id_alumna AND mes = $mes
+												 AND anio =  $anio
+												 AND id_concepto = $id_concepto
+												 AND id_grupo=$id_grupo";
+
+				$consulta=mysqli_query($conexion, $sql);
+
+				$fila  = mysqli_fetch_assoc($consulta);
+
+
+				$id_cuota = $fila['id_cuota'];
+
+
+
+			}	
+				
+
+
 			
-			if($id_concepto == "2" OR $id_concepto == "3"  ){
-				$mes = $mesActual;
-				$anio = $anioActual;
-			}
+	
 
-			//$sql="INSERT INTO cuota_alumna(id_alumna, mes, anio, monto, id_concepto, id_grupo, fecha_pago)
-			//VALUES($id_alumna, '$mes', '$anio', '$monto', '$id_concepto', '$id_grupo', '$fp')";
-			//ACTUALIZAR COMPROBANTE PAGADO
-			$sql = "UPDATE cuota_alumna
-					SET   monto = $monto, fecha_pago = '$fp',esta_paga=1, adeuda=0
-					WHERE id_alumna = $id_alumna AND mes = $mes AND anio = $anio AND id_concepto = 1 AND id_grupo = $id_grupo";
+	
 
-			$consulta=mysqli_query($conexion, $sql);
-			//$id_cuota=mysqli_insert_id($conexion);
-		}
-			$sql = "SELECT id_cuota
-					FROM cuota_alumna
-					WHERE id_alumna = $id_alumna AND mes = $mes AND anio = $anio AND id_concepto = $id_concepto AND id_grupo = $id_grupo  ";
+/*	if($id_concepto!=4){
 
-			$consulta=mysqli_query($conexion, $sql);
+	
 
-			$fila=mysqli_fetch_assoc($consulta);
-
-			$id_cuota = $fila['id_cuota'];
-
+	}else{
 		
 
-	}else{
-
-		$monto=-$monto;
-
-		$sql="INSERT INTO cuota_alumna(id_alumna, mes, anio, monto, id_concepto, id_grupo, fecha_pago)
-		VALUES($id_alumna, '$mes', '$anio', '$monto', '$id_concepto', '$id_grupo', '$fp')";
-		$consulta=mysqli_query($conexion, $sql);
-		$id_cuota=mysqli_insert_id($conexion);
-
-	}
-
-	if($id_concepto!=4){
-
-		//DEVOLVER INFORMACION DEL ALUMNO PARA GENERAR COMPROBANTE
-/*		$sql = "SELECT nombre,mail
-				FROM alumna 
-				WHERE id_alumna=$id_alumna";
-
-		$consulta=mysqli_query($conexion, $sql);
-		$fila=mysqli_fetch_assoc($consulta);
-
-		$observacion = "Pago realizado por la alumna: ".$fila['nombre']." mail:".$fila['mail']."";
-
-		$sql="INSERT INTO ingreso(concepto,fecha,monto,id_categoria,observacion)
-			  VALUES('Mensualidad Alumna','$fecha_pago',$monto,8,'$observacion')";
-
-		$consulta=mysqli_query($conexion2,$sql);*/
-
-
-	}else{
-		$monto= abs($monto);
-
-		$sql = "SELECT nombre,mail
-				FROM alumna 
-				WHERE id_alumna=$id_alumna";
-
-		$consulta=mysqli_query($conexion, $sql);
-		$fila=mysqli_fetch_assoc($consulta);
-
-		$observacion = "Devolucion realizada por la alumna: ".$fila['nombre']." mail:".$fila['mail']."";
-
-		$sql="INSERT INTO egreso(concepto,fecha,monto,id_categoria,observacion)
-			  VALUES('Devolucion Mensualidad Alumna','$fecha_pago',$monto,8,'$observacion')";
-
-		$consulta=mysqli_query($conexion2,$sql);
-
-	}
+	}*/
 
 
 

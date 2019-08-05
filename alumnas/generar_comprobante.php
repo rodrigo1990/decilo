@@ -4,45 +4,8 @@ include("../includes/verificarSesion.php");
 require_once("inc/conexion.php");
 require_once("inc/funciones.php");
 
-/********LISTAR MESES COMPROBANTES *********/
 
-$sqlMeses = "
-	SELECT mes,anio
-	FROM cuota_alumna
-	WHERE id_alumna = ".$_GET['id_alumna']." AND id_grupo = ".$_GET['id_grupo']." AND esta_paga = 0 AND id_concepto = 1
-	ORDER BY  id_cuota ASC
-	
-";
-
-
-$sqlContarMeses = "
-	
-	SELECT COUNT(*) as total
-	FROM cuota_alumna
-	WHERE id_alumna = ".$_GET['id_alumna']." AND id_grupo = ".$_GET['id_grupo']." AND esta_paga = 1 AND id_concepto = 1
-	ORDER BY  id_cuota ASC
-
-";
-
-
-$sqlUltimoAnio  ="SELECT * FROM cuota_alumna WHERE id_alumna = ".$_GET['id_alumna']." AND id_grupo = ".$_GET['id_grupo']." AND esta_paga = 1 AND id_concepto = 1 ORDER BY id_cuota DESC LIMIT 1";
-
-
-/**NO BORRAR !!! **********************************/
-
-$consultaContarMeses  = mysqli_query($conexion, $sqlContarMeses); 
-
-$consultaMeses = mysqli_query($conexion, $sqlMeses);
-
-$consultaMeses2 = mysqli_query($conexion, $sqlMeses);
-
-$consultaUltimoAnio = mysqli_query($conexion,$sqlUltimoAnio);
-/*************************************************/
-
-
-
-
-/****BUSCAR EXISTENCIAS DE GRUPO*****/
+/****BUSCAR TITULO DE GRUPO*****/
 $id_grupo = $_GET['id_grupo'];
 
 $sqlGrupo = "SELECT grupo 
@@ -76,17 +39,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	}
 
 
-	$fechaComprobante = explode("/",$_POST['comprobante']);
-
-	$mes = $fechaComprobante[0];
-	$anio = $fechaComprobante[1];
 
 
 	$conexion2= 0 ;
 	
-	$id_cuota=generarComprobante($conexion,$conexion2, $_POST['id_alumna'], $mes, $anio, $_POST['monto'], $_POST['id_concepto'], $_POST['actividad'], $_POST['fecha_pago'], $deuda );
+	$id_cuota=generarComprobante($conexion,$conexion2, $_POST['id_alumna'],  $_POST['mes'], $_POST['anio'], $_POST['monto'], $_POST['id_concepto'], $_POST['actividad'], $_POST['fecha_pago'], $deuda );
 
-	/*echo $id_cuota;
+	echo $id_cuota;
 	echo "<br>";
 	echo  $_POST['id_alumna'];
 	echo "<br>";
@@ -98,7 +57,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	echo "<br>";
 	echo $_POST['fecha_pago'];
 	echo "<br>";
-	echo $deuda;*/
+	echo $deuda;
 
 
 	
@@ -165,103 +124,24 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     <input type="date" name="fecha_pago" value="<?php echo date("Y-m-d") ?>" /><br>
     <div id="comprobante-cont">
 	    <label>Comprobante</label><br>
-	    <?php 
-
-	    	$filaUltimoAnio = mysqli_fetch_assoc($consultaUltimoAnio);
-
-
-	     ?>
-	    <select name="comprobante" id="comprobante">
-	    	<?php
-
-	    	$filaMeses2=mysqli_fetch_assoc($consultaMeses2);
-
-	    	$totalMeses=mysqli_fetch_assoc($consultaContarMeses);
-
-
-	    	if($filaMeses2['mes']  ){
-
-
-				while($filaMeses=mysqli_fetch_assoc($consultaMeses)){
-
-					echo "<option value=".$filaMeses['mes']."/".$filaMeses['anio'].">".$filaMeses['mes']." / ".$filaMeses['anio']." </option>";
-
-
-
-				}
-
+	     <select name="mes">
+    	<?php
+		for($i=1; $i<=12; $i++){
+			if($i==date("n")){
+				echo '<option selected value="'.$i.'">'.$meses_nombre[$i].'</option>';	
 			}else{
-
-				//si tiene doce meses pagos
-				$y = 1;
-				if($totalMeses['total']==13){
-
-					$anioActual = date('Y') +1;
-
-					if($filaUltimoAnio['mes']==12){
-						//$anioActual += 1;
-					}
-
-						
-						//se crearan doce registros mas, a partir del ultimo pagado
-						for($i=$filaUltimoAnio['mes']+1; $i<=12; $i++){
-
-							$y++;
-								if($i==date("n")){
-									echo '<option selected value="'.$i.' / '.$anioActual.'">'.$i.'/ '.$anioActual.'</option>';	
-								}else{
-									echo '<option value="'.$i.' / '.$anioActual.'">'.$i.'/ '.$anioActual.'</option>';	
-								}
+				echo '<option value="'.$i.'">'.$meses_nombre[$i].'</option>';	
+			}
+		}
+		?>
+    </select><br>
 
 
-						}
-						//una vez que se llegue a diciembre se crearan contemplando el mismo orden pero con un año
-						//adelantado.
-						if($y!=12){
-
-							for($i=1; $i<=$y+2; $i++){
-
-								if($i==date("n")){
-									echo '<option selected value="'.$i.' / '.((int)$anioActual + 1).'">'.$i.'/ '.((int)$anioActual + 1).'</option>';	
-								}else{
-									echo '<option value="'.$i.' / '.((int)$anioActual + 1).'">'.$i.'/ '.((int)$anioActual + 1).'</option>';	
-								}
+    <label>Año</label><br>
+    <input type="text" name="anio" value="<?php echo date("Y"); ?>" /><br />
 
 
-						}//sino se mostraran doce meses correspondientes al año actual	
-						}else{
-							for($i=1; $i<=12; $i++){
-							if($i==date("n")){
-								echo '<option selected value="'.$i.' / '.date('Y').'">'.$i.'/ '.date(Y).'</option>';	
-							}else{
-								echo '<option value="'.$i.' / '.date('Y').'">'.$i.'/ '.date(Y).'</option>';	
-							}
 
-						}
-							
-						}
-
-					}else{
-
-						for($i=1; $i<=12; $i++){
-							if($i==date("n")){
-								echo '<option selected value="'.$i.' / '.date('Y').'">'.$i.'/ '.date(Y).'</option>';	
-							}else{
-								echo '<option value="'.$i.' / '.date('Y').'">'.$i.'/ '.date(Y).'</option>';	
-							}
-
-						}
-												
-					}
-
-				}
-
-
-				
-			
-			
-			?>
-	    </select>
     </div><br>
     <!--  <label>Año</label><br>
     <input type="text" name="anio" value="<?php echo date("Y"); ?>" /><br />-->
