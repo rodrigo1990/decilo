@@ -30,7 +30,7 @@ include("../includes/menu-top-cashflow.php");
 							<label for="concepto">Concepto</label>
 						</div>
 						<div class="input-field">
-							<input type="text" name="monto" id="monto">
+							<input type="number" name="monto" id="monto" min="0">
 							<label for="monto">Monto</label>
 						</div>
 						<div class="input-field">

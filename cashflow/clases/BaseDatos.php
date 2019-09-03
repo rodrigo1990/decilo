@@ -2,17 +2,17 @@
 class BaseDatos{
 
 	public $base='edbplata_cashflow';
-	public $servidor='162.255.162.75';
+	public $servidor='localhost';
 	public $conexion;
 	public $mysqli;
 
 
 	public function __construct(){
 		
-		$this->conexion=mysqli_connect($this->servidor,'edbplata_rodrigo','Javierjavier1990',$this->base) or die ("No se ha podido establecer conexion con la base de datos");
+		$this->conexion=mysqli_connect($this->servidor,'root','',$this->base) or die ("No se ha podido establecer conexion con la base de datos");
 	
 
-		$this->mysqli=new mysqli($this->servidor, 'edbplata_rodrigo','Javierjavier1990', $this->base);
+		$this->mysqli=new mysqli($this->servidor, 'root','', $this->base);
 
 		$this->mysqli->set_charset("utf8");
 	}
@@ -79,6 +79,11 @@ class BaseDatos{
 
 	public function insertarIngreso($concepto,$fecha,$monto,$categoria,$observacion){
 
+		if($monto<0){
+			$monto = $monto*-1;
+		}
+
+
 		$stmt=$this->mysqli->prepare("INSERT INTO ingreso(concepto,fecha,monto,id_categoria,observacion)
 	  		  							VALUES (?,?,?,?,?)");
 
@@ -93,6 +98,10 @@ class BaseDatos{
 	}
 
 	public function insertarEgreso($concepto,$fecha,$monto,$categoria,$observacion){
+
+		if($monto<0){
+			$monto = $monto*-1;
+		}
 
 		$stmt=$this->mysqli->prepare("INSERT INTO egreso(concepto,fecha,monto,id_categoria,observacion)
 	  		  							VALUES (?,?,?,?,?)");
@@ -1319,6 +1328,49 @@ class BaseDatos{
 		echo "<h1>Total Diferencial : ".$total."</h1>";
 
 	}
+
+
+	public function calcularCaja(){
+
+		$stmt=$this->mysqli->prepare("SELECT SUM(monto) as ingresos
+										  FROM  ingreso");
+
+
+		$stmt->execute();
+
+		$resultado=$stmt->get_result();
+
+		$filaIngresos=$resultado->fetch_assoc();
+
+
+
+
+		$stmt=$this->mysqli->prepare("SELECT SUM(monto) as egresos
+										  FROM  egreso");
+
+
+		$stmt->execute();
+
+		$resultado=$stmt->get_result();
+
+		$filaEgresos=$resultado->fetch_assoc();
+
+
+
+
+
+
+
+
+		$total = $filaIngresos['ingresos'] - $filaEgresos['egresos'];
+		
+
+
+		echo round($total,2);	
+		
+
+
+	}//function
 
 
 
