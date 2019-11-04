@@ -69,7 +69,7 @@ public function validarAdminDeciloAlumnas($usuario,$pass){
 
 public function validarAdminDeciloCash($usuario,$pass){
 
-	$this->mysqli=new mysqli("localhost", 'root','', "edbplata_cashflow");
+	$this->mysqli=new mysqli("localhost", 'root','', "decilo_prueba");
 
 	$this->mysqli->set_charset("utf8");
 

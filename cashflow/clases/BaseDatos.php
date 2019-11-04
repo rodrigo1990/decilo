@@ -1,7 +1,7 @@
 <?php 
 class BaseDatos{
 
-	public $base='edbplata_cashflow';
+	public $base='decilo_prueba';
 	public $servidor='localhost';
 	public $conexion;
 	public $mysqli;
@@ -430,7 +430,14 @@ class BaseDatos{
 	public function listarIngresos(){
 
 		$sql="SELECT id,concepto,fecha,monto,observacion
-			  FROM ingreso";
+			  FROM ingreso
+			  
+			  UNION ALL
+
+
+			  SELECT id,concepto,fecha,monto,observacion
+			  FROM ingreso_historico
+			  ";
 
 
 
