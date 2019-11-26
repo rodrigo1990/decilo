@@ -27,6 +27,10 @@ include("../includes/menu-top-cashflow.php");
 					<h3>Total en caja : $<?php $baseDatos->calcularCaja(); ?></h3>
 					<br><br>
 					<a onClick="location.reload()" class="waves-effect waves-light btn">Actualizar</a>
+					<br><br>
+					<a href="cierreDeCajaPDF.php" class='waves-effect waves-light btn' target='_blank'>Exportar informe pdf</a>
+					<br><br>
+					<a class='waves-effect waves-light btn' href='exportarInformeXLS.php?fd=".$fecha_desde."&fh=".$fecha_hasta."' target='_blank'>Exportar informe a .xls</a>
 					
 		  		</div>
 		  </div>

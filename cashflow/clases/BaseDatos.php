@@ -1,7 +1,7 @@
 <?php 
 class BaseDatos{
 
-	public $base='decilo_prueba';
+	public $base='edbplata_cashflow';
 	public $servidor='localhost';
 	public $conexion;
 	public $mysqli;
@@ -432,11 +432,11 @@ class BaseDatos{
 		$sql="SELECT id,concepto,fecha,monto,observacion
 			  FROM ingreso
 			  
-			  UNION ALL
+			/*  UNION ALL
 
 
 			  SELECT id,concepto,fecha,monto,observacion
-			  FROM ingreso_historico
+			  FROM ingreso_historico*/
 			  ";
 
 
@@ -1055,7 +1055,7 @@ class BaseDatos{
 
 	}
 
-	public function exportarInformes($fechaDesde,$fechaHasta){
+	public function exportarInformesPDF($fechaDesde,$fechaHasta){
 
 
 			$pdf = new FPDF();
@@ -1378,6 +1378,218 @@ class BaseDatos{
 
 
 	}//function
+
+	
+
+	public function exportarCierreDeCajaPDF(){
+
+			
+
+			//recupero fecha del dia anterior
+			$yesterday = date("Y-m-d", strtotime("yesterday"));
+
+			//recupero fecha actual
+			$currentDate = date('Y-m-d');
+
+
+			$texto='INFORME: '.$currentDate.'';
+
+
+			$pdf = new FPDF();
+			/****************************INGRESOS*///////////////////////
+			$pdf->AddPage();
+			$pdf->SetFont('Arial','B',16);
+
+			
+
+			$pdf->Cell(40,10, $texto,0,1);
+
+			///////
+			//recupero primer registro de la tabla ingreso
+			$query = "SELECT fecha FROM `ingreso` ORDER BY fecha ASC limit 1";
+
+			$consulta=mysqli_query($this->conexion, $query);
+			
+			$fila=mysqli_fetch_assoc($consulta);
+
+
+			///CALCULOS TOTALES
+			$stmt=$this->mysqli->prepare("SELECT SUM(monto) as saldo
+									  FROM ingreso
+									  WHERE fecha BETWEEN (?) AND (?) 
+									  ORDER BY fecha ASC ");
+			$stmt->bind_param("ss",$fila['fecha'],$yesterday);
+
+			$stmt->execute();
+
+			$resultado=$stmt->get_result();
+
+			$totalIngresos=$resultado->fetch_assoc();
+
+			$stmt=$this->mysqli->prepare("SELECT SUM(monto) as saldo
+										  FROM egreso
+										  WHERE fecha BETWEEN (?) AND (?) 
+										  ORDER BY fecha ASC ");
+			$stmt->bind_param("ss",$fila['fecha'],$yesterday);
+
+			$stmt->execute();
+
+			$resultado=$stmt->get_result();
+
+			$totalEgresos=$resultado->fetch_assoc();
+
+			$total = $totalIngresos['saldo'] - $totalEgresos['saldo'];
+
+			/////////////////////////////////////////////////////////////////////////////
+			
+
+			$texto="El saldo a la fecha es de  ".$total."";	
+
+			$pdf->Cell(40,10, $texto,0,1);
+			$pdf->SetFont('Arial','',10);
+
+
+
+			//LISTADO DE INGRESOS
+			$stmt=$this->mysqli->prepare("SELECT fecha,concepto,monto
+										  FROM ingreso
+										  WHERE fecha = (?) 
+										  ORDER BY fecha ASC ");
+			$stmt->bind_param("s",$currentDate);
+
+			$stmt->execute();
+
+			$resultado=$stmt->get_result();
+
+			$texto='INGRESOS DEL DIA DE HOY: ';
+
+			$pdf->SetFont('Arial','B',10);
+
+			$pdf->Cell(40,10, $texto,0,1);
+
+			
+
+
+			while($fila=$resultado->fetch_assoc()){
+				
+				
+				$pdf->SetFont('Arial','',10);
+
+				$texto='Fecha pago: '.$fila['fecha'].' | Concepto: '.$fila['concepto'].' | - $ '.$fila['monto'].'';
+				
+				$pdf->Cell(0,4, $texto,0,1);
+				
+								
+
+
+			}
+
+			/////////////////////////////////////////////////
+
+
+			
+
+			//TOTAL INGRESOS DEL DIA DE HOY 
+			$stmt=$this->mysqli->prepare("SELECT SUM(monto) AS total
+										  FROM ingreso
+										  WHERE fecha = (?) 
+										  ORDER BY fecha ASC ");
+			$stmt->bind_param("s",$currentDate);
+
+			$stmt->execute();
+
+			$resultado=$stmt->get_result();
+
+			$currentTotalIngresos=$resultado->fetch_assoc();
+
+
+			$texto='TOTAL: '. $currentTotalIngresos['total'];
+
+			$pdf->SetFont('Arial','B',10);
+
+			$pdf->Cell(40,10, $texto,0,1);
+
+
+			////////////////////////////////////////////////////////////////////
+
+
+
+			//LISTADO DE EGRESOS
+			$stmt=$this->mysqli->prepare("SELECT fecha,concepto,monto
+										  FROM egreso
+										  WHERE fecha = (?) 
+										  ORDER BY fecha ASC ");
+			$stmt->bind_param("s",$currentDate);
+
+			$stmt->execute();
+
+			$resultado=$stmt->get_result();
+
+			$texto='EGRESOS DEL DIA DE HOY: ';
+
+			$pdf->SetFont('Arial','B',10);
+
+			$pdf->Cell(40,10, $texto,0,1);
+
+			
+
+
+			while($fila=$resultado->fetch_assoc()){
+				
+				
+				$pdf->SetFont('Arial','',10);
+
+				$texto='Fecha pago: '.$fila['fecha'].' | Concepto: '.$fila['concepto'].' | - $ '.$fila['monto'].'';
+				
+				$pdf->Cell(0,4, $texto,0,1);
+				
+								
+
+
+			}
+			///////////////////////////////////////////////////////////////////////////
+
+			//TOTAL EGRESOS DEL DIA DE HOY 
+			$stmt=$this->mysqli->prepare("SELECT SUM(monto) AS total
+										  FROM egreso
+										  WHERE fecha = (?) 
+										  ORDER BY fecha ASC ");
+			$stmt->bind_param("s",$currentDate);
+
+			$stmt->execute();
+
+			$resultado=$stmt->get_result();
+
+			$currentTotalEgresos=$resultado->fetch_assoc();
+
+
+			$texto='TOTAL: '. $currentTotalEgresos['total'];
+
+			$pdf->SetFont('Arial','B',10);
+
+			$pdf->Cell(40,10, $texto,0,1);
+
+
+			$currentTotal  = $currentTotalIngresos['total']-$currentTotalEgresos['total'];
+
+
+			$total = $total + $currentTotal; 
+
+
+			$texto='CIERRE DE CAJA: '. $total;
+
+			$pdf->SetFont('Arial','B',20);
+
+			$pdf->Cell(40,20, $texto,0,1);
+
+
+			$pdf->Output();
+
+			
+	
+
+	}
+
 
 
 

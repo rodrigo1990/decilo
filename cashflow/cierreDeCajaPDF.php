@@ -7,7 +7,7 @@ require_once("clases/BaseDatos.php");
 $baseDatos = new BaseDatos();
 
 
-echo $baseDatos->exportarInformesPDF($_POST['fechaDesde'],$_POST['fechaHasta']);
+echo $baseDatos->exportarCierreDeCajaPDF();
 
 
 
