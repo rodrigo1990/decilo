@@ -1593,6 +1593,336 @@ class BaseDatos{
 
 
 
+		public function exportarCierreDeCajaXLS(){
+
+			//recupero fecha del dia anterior
+			$yesterday = date("Y-m-d", strtotime("yesterday"));
+
+			//recupero fecha actual
+			$currentDate = date('Y-m-d');
+
+
+
+			/****************************INGRESOS*///////////////////////
+			///////
+			//recupero primer registro de la tabla ingreso
+			$query = "SELECT fecha FROM `ingreso` ORDER BY fecha ASC limit 1";
+
+			$consulta=mysqli_query($this->conexion, $query);
+			
+			$fila=mysqli_fetch_assoc($consulta);
+
+
+			///CALCULOS TOTALES
+			$stmt=$this->mysqli->prepare("SELECT SUM(monto) as saldo
+									  FROM ingreso
+									  WHERE fecha BETWEEN (?) AND (?) 
+									  ORDER BY fecha ASC ");
+			$stmt->bind_param("ss",$fila['fecha'],$yesterday);
+
+			$stmt->execute();
+
+			$resultado=$stmt->get_result();
+
+			$totalIngresos=$resultado->fetch_assoc();
+
+			$stmt=$this->mysqli->prepare("SELECT SUM(monto) as saldo
+										  FROM egreso
+										  WHERE fecha BETWEEN (?) AND (?) 
+										  ORDER BY fecha ASC ");
+			$stmt->bind_param("ss",$fila['fecha'],$yesterday);
+
+			$stmt->execute();
+
+			$resultado=$stmt->get_result();
+
+			$totalEgresos=$resultado->fetch_assoc();
+
+			$total = $totalIngresos['saldo'] - $totalEgresos['saldo'];
+			//////////////
+			//IMPRIMO CABECERAS DEL DOCUMENTO
+			echo "	<table>
+						<tr>
+							<th>INFORME: ".$currentDate."</th>
+						</tr>
+						<tr>
+							<th>SALDO A LA FECHA: ".$total."</th>
+						</tr>
+					</table>";
+			//////
+
+
+
+			//LISTADO DE INGRESOS
+			$stmt=$this->mysqli->prepare("SELECT fecha,concepto,monto
+										  FROM ingreso
+										  WHERE fecha = (?) 
+										  ORDER BY fecha ASC ");
+			$stmt->bind_param("s",$currentDate);
+
+			$stmt->execute();
+
+			$resultado=$stmt->get_result();
+
+
+			
+			echo "
+			<table>
+				<tr>
+					<th>
+						INGRESOS DEL DIA DE HOY:
+					</th>
+				</tr>
+				<tr>
+					<th>FECHA</th>
+					<th>CONCEPTO</th>
+					<th>MONTO</th>
+				</tr>
+
+			";
+
+			while($fila=$resultado->fetch_assoc()){
+			
+				echo '
+					<tr>
+						<td>'.$fila['fecha'].'</td>
+						<td>'.$fila['concepto'].'</td>
+						<td>'.$fila['monto'].'</td>
+					</tr>	
+			
+				';
+				
+			}
+
+			echo "</table>";
+
+
+
+
+			//LISTADO DE INGRESOS
+			$stmt=$this->mysqli->prepare("SELECT fecha,concepto,monto
+										  FROM egreso
+										  WHERE fecha = (?) 
+										  ORDER BY fecha ASC ");
+			$stmt->bind_param("s",$currentDate);
+
+			$stmt->execute();
+
+			$resultado=$stmt->get_result();
+
+
+			
+			echo "
+			<table>
+				<tr>
+					<th>
+						EGRESOS DEL DIA DE HOY:
+					</th>
+				</tr>
+				<tr>
+					<th>FECHA</th>
+					<th>CONCEPTO</th>
+					<th>MONTO</th>
+				</tr>
+
+			";
+
+			while($fila=$resultado->fetch_assoc()){
+			
+				echo '
+					<tr>
+						<td>'.$fila['fecha'].'</td>
+						<td>'.$fila['concepto'].'</td>
+						<td>'.$fila['monto'].'</td>
+					</tr>	
+			
+				';
+				
+			}
+
+			echo "</table>";
+
+
+
+
+
+
+
+/*
+
+		$stmt=$this->mysqli->prepare("SELECT fecha,concepto,monto
+									  FROM ingreso
+									  WHERE fecha BETWEEN (?) AND (?)");
+		$stmt->bind_param("ss",$fecha_desde,$fecha_hasta);
+
+		$stmt->execute();
+
+		$resultado=$stmt->get_result();
+
+			echo
+			 "
+			 <table>
+			 <tr><th>INGRESOS</th></tr>
+				<tr>
+					<th>
+						Fecha
+					</th>
+					<th>
+						Concepto
+					</th>
+					<th>
+						Monto
+					</th>
+				</tr>";
+
+			while($fila=$resultado->fetch_assoc()){
+
+				echo
+				 "
+				<tr>
+					<td>
+					".$fila['fecha']."
+					</td>
+					<td>
+					".$fila['concepto']."
+					</td>
+					<td>
+					".$fila['monto']."
+					</td>
+
+				</tr>
+
+				 ";
+
+
+			
+
+			}//while
+
+			
+
+
+		$stmt=$this->mysqli->prepare("SELECT SUM(monto) AS total
+									  FROM ingreso
+									  WHERE fecha BETWEEN (?) AND (?)");
+		$stmt->bind_param("ss",$fecha_desde,$fecha_hasta);
+
+		$stmt->execute();
+
+		$resultado=$stmt->get_result();
+
+		$totalIngresos=$resultado->fetch_assoc();
+
+
+		echo "
+
+		<tr>
+			<td>
+			</td>
+			<td>
+			</td>
+			<td>
+				<b>TOTAL: ".$totalIngresos['total']."</b>
+			</td>
+
+
+		</tr>
+
+		";
+
+		echo "</table>";
+
+
+
+
+
+
+/**************************TABLA EGRESOS********************************************/
+		/*$stmt=$this->mysqli->prepare("SELECT fecha,concepto,monto
+									  FROM egreso
+									  WHERE fecha BETWEEN (?) AND (?)");
+		$stmt->bind_param("ss",$fecha_desde,$fecha_hasta);
+
+		$stmt->execute();
+
+		$resultado=$stmt->get_result();
+
+			echo
+			 "
+			 <table>
+			 <tr><th>EGRESOS</th></tr>
+				<tr>
+					<th>
+						Fecha
+					</th>
+					<th>
+						Concepto
+					</th>
+					<th>
+						Monto
+					</th>
+				</tr>";
+
+			while($fila=$resultado->fetch_assoc()){
+
+				echo
+				 "
+				<tr>
+					<td>
+					".$fila['fecha']."
+					</td>
+					<td>
+					".$fila['concepto']."
+					</td>
+					<td>
+					".$fila['monto']."
+					</td>
+
+				</tr>
+
+				 ";
+			}//while
+
+
+		$stmt=$this->mysqli->prepare("SELECT SUM(monto) AS total
+									  FROM egreso
+									  WHERE fecha BETWEEN (?) AND (?)");
+		$stmt->bind_param("ss",$fecha_desde,$fecha_hasta);
+
+		$stmt->execute();
+
+		$resultado=$stmt->get_result();
+
+		$totalEgresos=$resultado->fetch_assoc();
+
+
+		echo "
+
+		<tr>
+			<td>
+			</td>
+			<td>
+			</td>
+			<td>
+				<b>TOTAL: ".$totalEgresos['total']."</b>
+			</td>
+
+
+		</tr>
+
+		";
+
+		echo "</table>";
+
+		echo "<br>";
+		$total = 0;
+		$total = $totalIngresos['total']-$totalEgresos['total'];
+		echo "<h1>Total Diferencial : ".$total."</h1>";*/
+
+	}
+
+
+
 
 
 
