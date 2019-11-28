@@ -483,6 +483,58 @@ class BaseDatos{
 
 	}
 
+
+	public function listarIngresosHistoricos(){
+
+		$sql="SELECT id,concepto,fecha,monto,observacion
+			  FROM ingreso_historico
+			  
+			/*  UNION ALL
+
+
+			  SELECT id,concepto,fecha,monto,observacion
+			  FROM ingreso_historico*/
+			  ";
+
+
+
+		$consulta=mysqli_query($this->conexion,$sql);
+		$observacion='';
+		while($fila=mysqli_fetch_assoc($consulta)){
+
+			if(strlen($fila['observacion'])<=50)
+			  {
+			    $observacion= $fila['observacion'];
+			  }
+			  else
+			  {
+			    $observacion='<a href="verDetalleIngreso.php?id='.$fila['id'].'" target="_blank">'.substr($fila['observacion'],0,50) . '...</a>';
+			  }
+
+			echo "<tr>
+					  <td>
+						".$fila['id']."
+					  </td>
+					  <td>
+						".$fila['concepto']."
+					  </td>
+					  <td>
+						".$observacion."
+					  </td>
+					  <td>
+						".date("d/m/Y", strtotime($fila['fecha']))."
+					  </td>
+					  <td>
+					  	".$fila['monto']."
+					  </td>
+					  
+				  </tr>";
+
+
+		}
+
+	}
+
 	public function listarIngresosPorRangoDeFecha($fechaDesde,$fechaHasta){
 
 		$stmt=$this->mysqli->prepare("SELECT id,concepto,fecha,monto,observacion
@@ -649,10 +701,123 @@ class BaseDatos{
 	}//function
 
 
+	public function listarIngresosPorCategoriaHistorico($categoria){
+
+		$stmt=$this->mysqli->prepare("SELECT id,concepto,fecha,monto,observacion
+										  FROM ingreso_historico
+										  WHERE id_categoria=(?)");
+
+		$stmt->bind_param("i",$categoria);
+
+		$stmt->execute();
+
+		$resultado=$stmt->get_result();
+
+
+		$observacion='';
+
+		while($fila=$resultado->fetch_assoc()){
+
+			if(strlen($fila['observacion'])<=50)
+			  {
+			    echo $fila['observacion'];
+			  }
+			  else
+			  {
+			    $observacion='<a href="verDetalleIngreso.php?id='.$fila['id'].'" target="_blank">'.substr($fila['observacion'],0,50) . '...</a>';
+			  }
+
+			echo "<tr>
+					  <td>
+						".$fila['id']."
+					  </td>
+					  <td>
+						".$fila['concepto']."
+					  </td>
+					  <td>
+						".$observacion."
+					  </td>
+					  <td>
+						".date("d/m/Y", strtotime($fila['fecha']))."
+					  </td>
+					  <td>
+					  	".$fila['monto']."
+					  </td>
+					  <td>
+						<a href='actualizarIngreso.php?id=".$fila['id']."'>Actualizar</a>
+					  </td>
+					  <td>
+						<a  style='cursor:pointer;' onClick='eliminarIngreso(".$fila['id'].");'>Eliminar</a>
+					  </td>
+				  </tr>";
+
+
+		}
+
+	}//function
+
+
 			public function listarEgresosPorCategoria($categoria){
 
 		$stmt=$this->mysqli->prepare("SELECT id,concepto,fecha,monto,observacion
 										  FROM egreso 
+										  WHERE id_categoria=(?)");
+
+		$stmt->bind_param("i",$categoria);
+
+		$stmt->execute();
+
+		$resultado=$stmt->get_result();
+
+
+		$observacion='';
+
+		while($fila=$resultado->fetch_assoc()){
+
+			if(strlen($fila['observacion'])<=50)
+			  {
+			    echo $fila['observacion'];
+			  }
+			  else
+			  {
+			    $observacion='<a href="verDetalleEgreso.php?id='.$fila['id'].'" target="_blank">'.substr($fila['observacion'],0,50) . '...</a>';
+			  }
+
+			echo "<tr>
+					  <td>
+						".$fila['id']."
+					  </td>
+					  <td>
+						".$fila['concepto']."
+					  </td>
+					  <td>
+						".$observacion."
+					  </td>
+					  <td>
+						".date("d/m/Y", strtotime($fila['fecha']))."
+					  </td>
+					  <td>
+					  	".$fila['monto']."
+					  </td>
+					  <td>
+						<a href='actualizarEgreso.php?id=".$fila['id']."'>Actualizar</a>
+					  </td>
+					  <td>
+						<a  style='cursor:pointer;' onClick='eliminarEgreso(".$fila['id'].");'>Eliminar</a>
+					  </td>
+				  </tr>";
+
+
+		}
+
+	}//function
+
+
+
+			public function listarEgresosPorCategoriaHistorico($categoria){
+
+		$stmt=$this->mysqli->prepare("SELECT id,concepto,fecha,monto,observacion
+										  FROM egreso_historico
 										  WHERE id_categoria=(?)");
 
 		$stmt->bind_param("i",$categoria);
@@ -748,6 +913,52 @@ class BaseDatos{
 					  <td>
 						<a  style='cursor:pointer;' onClick='eliminarEgreso(".$fila['id'].");'>Eliminar</a>
 					  </td>
+				  </tr>";
+
+
+		}
+
+	}
+
+	public function listarEgresosHistoricos(){
+
+		$sql="SELECT id,concepto,fecha,monto,observacion
+			  FROM egreso_historico";
+
+
+
+		$consulta=mysqli_query($this->conexion,$sql);
+
+		$observacion='';
+
+		while($fila=mysqli_fetch_assoc($consulta)){
+
+			if(strlen($fila['observacion'])<=50)
+			  {
+			    $observacion =  $fila['observacion'];
+			  }
+			  else
+			  {
+			    $observacion='<a href="verDetalleEgreso.php?id='.$fila['id'].'" target="_blank">'.substr($fila['observacion'],0,50) . '...</a>';
+			  }
+
+			echo "<tr>
+					  <td>
+						".$fila['id']."
+					  </td>
+					  <td>
+						".$fila['concepto']."
+					  </td>
+					   <td>
+						".$observacion."
+					  </td>
+					  <td>
+						".date("d/m/Y", strtotime($fila['fecha']))."
+					  </td>
+					  <td>
+					  	".$fila['monto']."
+					  </td>
+					  
 				  </tr>";
 
 
@@ -1643,13 +1854,18 @@ class BaseDatos{
 			//IMPRIMO CABECERAS DEL DOCUMENTO
 			echo "	<table>
 						<tr>
-							<th>INFORME: ".$currentDate."</th>
+							<th style='font-size:25pt'>INFORME:</th>
+							<th style='font-size:25pt'>".$currentDate."</th>
+
 						</tr>
 						<tr>
-							<th>SALDO A LA FECHA: ".$total."</th>
+							<th style='font-size:25pt'>SALDO A LA FECHA: </th>
+							<th style='font-size:25pt'>$".$total."</th>
 						</tr>
 					</table>";
 			//////
+
+			echo "<br>";
 
 
 
@@ -1687,19 +1903,53 @@ class BaseDatos{
 					<tr>
 						<td>'.$fila['fecha'].'</td>
 						<td>'.$fila['concepto'].'</td>
-						<td>'.$fila['monto'].'</td>
+						<td>$'.$fila['monto'].'</td>
 					</tr>	
 			
 				';
 				
 			}
 
-			echo "</table>";
+			
+
+			//TOTAL INGRESOS DEL DIA DE HOY 
+			$stmt=$this->mysqli->prepare("SELECT SUM(monto) AS total
+										  FROM ingreso
+										  WHERE fecha = (?) 
+										  ORDER BY fecha ASC ");
+			$stmt->bind_param("s",$currentDate);
+
+			$stmt->execute();
+
+			$resultado=$stmt->get_result();
+
+			$currentTotalIngresos=$resultado->fetch_assoc();
+
+
+					echo "	<table>
+						<tr>
+							<th></th>
+							<th>TOTAL:</th>
+
+							<th> $".$currentTotalIngresos['total']."</th>
+						</tr>
+					</table>";
+
+
+					echo "<br>";
+
+
+
+			////////////////////////////////////////////////////////////////////
+
+
+	
 
 
 
 
-			//LISTADO DE INGRESOS
+
+			//LISTADO DE EGRESOS
 			$stmt=$this->mysqli->prepare("SELECT fecha,concepto,monto
 										  FROM egreso
 										  WHERE fecha = (?) 
@@ -1740,184 +1990,69 @@ class BaseDatos{
 				
 			}
 
-			echo "</table>";
+
+			//TOTAL EGRESOS DEL DIA DE HOY 
+			$stmt=$this->mysqli->prepare("SELECT SUM(monto) AS total
+										  FROM egreso
+										  WHERE fecha = (?) 
+										  ORDER BY fecha ASC ");
+			$stmt->bind_param("s",$currentDate);
+
+			$stmt->execute();
+
+			$resultado=$stmt->get_result();
+
+			$currentTotalEgresos=$resultado->fetch_assoc();
+
+
+					echo "	<table>
+						<tr>
+							<th></th>
+							<th>TOTAL:</th>
+
+							<th> $".$currentTotalEgresos['total']."</th>
+						</tr>
+					</table>";
+
+					echo "<br>";
 
 
 
+			////////////////////////////////////////////////////////////////////
 
-
-
-
-/*
-
-		$stmt=$this->mysqli->prepare("SELECT fecha,concepto,monto
-									  FROM ingreso
-									  WHERE fecha BETWEEN (?) AND (?)");
-		$stmt->bind_param("ss",$fecha_desde,$fecha_hasta);
-
-		$stmt->execute();
-
-		$resultado=$stmt->get_result();
-
-			echo
-			 "
-			 <table>
-			 <tr><th>INGRESOS</th></tr>
-				<tr>
-					<th>
-						Fecha
-					</th>
-					<th>
-						Concepto
-					</th>
-					<th>
-						Monto
-					</th>
-				</tr>";
-
-			while($fila=$resultado->fetch_assoc()){
-
-				echo
-				 "
-				<tr>
-					<td>
-					".$fila['fecha']."
-					</td>
-					<td>
-					".$fila['concepto']."
-					</td>
-					<td>
-					".$fila['monto']."
-					</td>
-
-				</tr>
-
-				 ";
+			//CIERRE DE CAJA
 
 
 			
 
-			}//while
-
-			
+			$currentTotal  = $currentTotalIngresos['total']-$currentTotalEgresos['total'];
 
 
-		$stmt=$this->mysqli->prepare("SELECT SUM(monto) AS total
-									  FROM ingreso
-									  WHERE fecha BETWEEN (?) AND (?)");
-		$stmt->bind_param("ss",$fecha_desde,$fecha_hasta);
-
-		$stmt->execute();
-
-		$resultado=$stmt->get_result();
-
-		$totalIngresos=$resultado->fetch_assoc();
+			$total = $total + $currentTotal; 
 
 
-		echo "
-
-		<tr>
-			<td>
-			</td>
-			<td>
-			</td>
-			<td>
-				<b>TOTAL: ".$totalIngresos['total']."</b>
-			</td>
 
 
-		</tr>
+			echo "	<table>
+						<tr>
+							<th></th>
+							<th style='font-size:25pt'>CIERRE DE CAJA:</th>
 
-		";
+							<th style='font-size:25pt'> $".$total."</th>
+						</tr>
+					</table>";
 
-		echo "</table>";
+
+
+			////////////////////////////////////////////////////////////////////
 
 
 
 
 
 
-/**************************TABLA EGRESOS********************************************/
-		/*$stmt=$this->mysqli->prepare("SELECT fecha,concepto,monto
-									  FROM egreso
-									  WHERE fecha BETWEEN (?) AND (?)");
-		$stmt->bind_param("ss",$fecha_desde,$fecha_hasta);
-
-		$stmt->execute();
-
-		$resultado=$stmt->get_result();
-
-			echo
-			 "
-			 <table>
-			 <tr><th>EGRESOS</th></tr>
-				<tr>
-					<th>
-						Fecha
-					</th>
-					<th>
-						Concepto
-					</th>
-					<th>
-						Monto
-					</th>
-				</tr>";
-
-			while($fila=$resultado->fetch_assoc()){
-
-				echo
-				 "
-				<tr>
-					<td>
-					".$fila['fecha']."
-					</td>
-					<td>
-					".$fila['concepto']."
-					</td>
-					<td>
-					".$fila['monto']."
-					</td>
-
-				</tr>
-
-				 ";
-			}//while
 
 
-		$stmt=$this->mysqli->prepare("SELECT SUM(monto) AS total
-									  FROM egreso
-									  WHERE fecha BETWEEN (?) AND (?)");
-		$stmt->bind_param("ss",$fecha_desde,$fecha_hasta);
-
-		$stmt->execute();
-
-		$resultado=$stmt->get_result();
-
-		$totalEgresos=$resultado->fetch_assoc();
-
-
-		echo "
-
-		<tr>
-			<td>
-			</td>
-			<td>
-			</td>
-			<td>
-				<b>TOTAL: ".$totalEgresos['total']."</b>
-			</td>
-
-
-		</tr>
-
-		";
-
-		echo "</table>";
-
-		echo "<br>";
-		$total = 0;
-		$total = $totalIngresos['total']-$totalEgresos['total'];
-		echo "<h1>Total Diferencial : ".$total."</h1>";*/
 
 	}
 

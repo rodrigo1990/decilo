@@ -31,12 +31,10 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 								<th>Observacion</th>
 								<th>Fecha</th>
 								<th>Monto</th>
-								<th>Actualizar</th>
-								<th>Eliminar</th>
 							</tr>
 							<tbody id="listarIngresos">
 							<?php
-								$baseDatos->listarIngresos();
+								$baseDatos->listarIngresosHistoricos();
 							  ?>
 							  </tbody>
 						</table>
@@ -50,7 +48,7 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 						<form action="" method="POST">
 							<div class="col l6">
 								<label for="categorias">Categoria:</label><br>
-								<select name="categorias" id="categorias" onChange="listarIngresosPorCategoria();">
+								<select name="categorias" id="categorias" onChange="listarIngresosPorCategoriaHistorico();">
 									<?php
 										$baseDatos->listarCategorias('ver ingresos');
 							 		?>
@@ -200,7 +198,10 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 
 	}//fcuntion
 
-	function listarIngresosPorCategoria(){
+	
+
+
+	function listarIngresosPorCategoriaHistorico(){
 
 		var categoria = $("#categorias").val();
 
@@ -208,10 +209,9 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 
 				$.ajax({
 					data:{categoria:categoria},
-					url:'ajax/verIngresoPorCategoria.php',
+					url:'ajax/verIngresoPorCategoriaHistorico.php',
 					type:'post',
 					success:function(response){
-						console.log(response);
 						$("#listarIngresos").html(response);
 						
 						

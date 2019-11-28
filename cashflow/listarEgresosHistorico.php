@@ -1,56 +1,58 @@
 <?php 
 include("../includes/verificarSesion.php"); 
+
 require_once("clases/BaseDatos.php");
 
 $baseDatos = new BaseDatos();
  ?>
+
 <?php
 include("../includes/header.php");
-include("../includes/menu-top-cashflow-buscadorIngresos.php");
+include("../includes/menu-top-cashflow-buscadorEgresos.php");
 ?>
 <div class="row" style="height:100vh;">
-	<div class="col l2 m2 s2" style="background-color: rgb(81,83,177);height:100vh">
+	<div class="col l2" style="background-color: rgb(81,83,177);height:100vh">
 		  <div id="slide-out" class="side-nav">
 			<!--  <h3 class="center-align">Panel de administracion</h3>-->
 			<h4 class="left-align">MENU</h4>
-			<?php include("includes/links.php") ?>
+				<?php include("includes/links.php") ?>
 
 		  </div>
 	  </div>
-	  <div class="col l10 m10 s10">
+	  <div class="col l10 m10">
 		 	<div class="row cont-gral">
 		  		<div class="container container-esp">
 		  			<div class="row">
-						<h3>Lista de ingresos</h3>
+						<h3>Lista de egresos</h3>
 					</div>
-					<div class="row table-cont" style="padding-bottom:5%;">		  			
+					<div class="row" style="padding-bottom:5%;">		  			
 						<table>
 							<tr>
 								<th>ID</th>
 								<th>Concepto</th>
-								<th>Observacion</th>
+								<th>Observaciones</th>
 								<th>Fecha</th>
 								<th>Monto</th>
-								<th>Actualizar</th>
-								<th>Eliminar</th>
 							</tr>
-							<tbody id="listarIngresos">
-							<?php
-								$baseDatos->listarIngresos();
-							  ?>
-							  </tbody>
+							<tbody id="listarEgresos">
+								<?php
+									$baseDatos->listarEgresosHistoricos();
+								  ?>
+						  	</tbody>
 						</table>
 					</div>
-					
+
+
+
 					<!-- ver ingresos -->
 					<div class="row">
-						<h4>Ver ingresos por categoria</h4>
+						<h4>Ver egresos por categoria</h4>
 					</div>
 					<div class="row">
 						<form action="" method="POST">
 							<div class="col l6">
 								<label for="categorias">Categoria:</label><br>
-								<select name="categorias" id="categorias" onChange="listarIngresosPorCategoria();">
+								<select name="categorias" id="categorias" onChange="listarEgresosPorCategoriaHistorico();">
 									<?php
 										$baseDatos->listarCategorias('ver ingresos');
 							 		?>
@@ -58,14 +60,10 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 							</div>
 						</form>
 					</div>
-				
 
-
-
-					
-					<!-- ver ingresos -->
+								<!-- ver ingresos -->
 					<div class="row">
-						<h4>Ver ingresos por rango de fecha</h4>
+						<h4>Ver egresos por rango de fecha</h4>
 					</div>
 					<div class="row">
 						<form action="" method="POST">
@@ -75,23 +73,29 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 							</div>
 							<div class="col l6">
 								<label for="fechaHasta">Fecha hasta:</label><br>
-								<input type="date" name="fechaHasta" id="fechaHasta" style="width:80%"><br><br><br>
+								<input type="date" name="fechaHasta" id="fechaHasta" style="width:80%"><br>
 							</div>
 							
 						</form>
 					</div>
 					<div class="row">
-						<a class="waves-effect waves-light btn float-right" onClick="verIngresoPorRangoDeFecha();" style="cursor:pointer">Ver</a>
+						<a class="waves-effect waves-light btn float-right" onClick="verEgresoPorRangoDeFecha();" style="cursor:pointer">Ver</a>
 
-						<a class="waves-effect waves-light btn float-right" onClick="listarIngresos();" style="cursor:pointer">Todas</a>
+						<a class="waves-effect waves-light btn float-right" onClick="listarEgresos();" style="cursor:pointer">Todas</a>
 					</div>
 
 
 
 
-					<!-- Eliminar ingresos -->
+
+
+
+
+
+
+
 					<div class="row">
-						<h4>Eliminar ingresos por rango de fecha</h4>
+						<h4>Eliminar egresos por rango de fecha</h4>
 					</div>
 					<div class="row">
 						<form action="" method="POST">
@@ -107,14 +111,8 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 						</form>
 					</div>
 					<div class="row last-row">
-						<a class="waves-effect waves-light btn float-right" onClick="eliminarIngresoPorRangoDeFecha();" style="cursor:pointer">Eliminar</a>
+						<a class="waves-effect waves-light btn float-right" onClick="eliminarEgresoPorRangoDeFecha();" style="cursor:pointer;">Eliminar</a>
 					</div>
-					
-					
-					
-
-
-
 
 		  		</div>
 		  </div>
@@ -129,48 +127,39 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 
 <script>
 
-	function listarIngresos(){
+function listarEgresos(){
 
-		$.ajax({
-			url:'ajax/verIngresos.php',
-			type:'post',
-			success:function(response){
-				$("#listarIngresos").html(response);
-				
-			}
-		});
+				$.ajax({
+					url:'ajax/verEgresos.php',
+					type:'post',
+					success:function(response){
+						$("#listarEgresos").html(response);
+						
+					}
+				});
+}
 
-	}
 
+function eliminarEgreso(id){
 
-	function eliminarIngreso(id){
-
-		var confirmar=confirm("¿Desea eliminar este ingreso?"); 
+		var confirmar=confirm("¿Desea eliminar este egreso?"); 
 
 		if(confirmar==true){
 
 			$.ajax({
 					data:{id:id},
-					url:'ajax/eliminarIngreso.php',
+					url:'ajax/eliminarEgreso.php',
 					type:'post',
 					success:function(response){
-						$("#listarIngresos").html(response);
-						
-						
-				
+						$("#listarEgresos").html(response);
 					}
 			});
-
 		}
 
+	}//function
 
 
-
-
-	}
-
-
-	function eliminarIngresoPorRangoDeFecha(){
+		function eliminarEgresoPorRangoDeFecha(){
 
 		var confirmar = confirm("¿Desea realizar esta operacion?");
 
@@ -183,13 +172,10 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 
 			$.ajax({
 					data:{fechaDesde:fechaDesde,fechaHasta:fechaHasta},
-					url:'ajax/eliminarIngresoPorRangoDeFecha.php',
+					url:'ajax/eliminarEgresoPorRangoDeFecha.php',
 					type:'post',
 					success:function(response){
-						$("#listarIngresos").html(response);
-						
-						
-				
+						$("#listarEgresos").html(response);
 					}
 			});
 
@@ -198,57 +184,10 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 		}
 
 
-	}//fcuntion
-
-	function listarIngresosPorCategoria(){
-
-		var categoria = $("#categorias").val();
-
-		if(categoria!='todas'){
-
-				$.ajax({
-					data:{categoria:categoria},
-					url:'ajax/verIngresoPorCategoria.php',
-					type:'post',
-					success:function(response){
-						console.log(response);
-						$("#listarIngresos").html(response);
-						
-						
-				
-					}
-				});
-		}else{
-
-				listarIngresos();
-
-		}//listarIngresosPorCategoria
-
-		
 	}//function
 
-	function verIngresoPorRangoDeFecha(){
 
-		var fechaDesde = $("#fechaDesde").val();
-
-		var fechaHasta = $("#fechaHasta").val();
-
-			$.ajax({
-					data:{fechaDesde:fechaDesde,fechaHasta:fechaHasta},
-					url:'ajax/verIngresoPorRangoDeFecha.php',
-					type:'post',
-					success:function(response){
-						$("#listarIngresos").html(response);
-						
-						
-				
-					}
-			});
-
-	}//fcuntion
-
-
-	function buscarIngresos(){
+	function buscarEgresos(){
 
 		var ingreso = $("#busqueda").val();
 
@@ -256,7 +195,7 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 
             $.ajax({
             data:"busqueda="+ ingreso,
-            url:'ajax/buscarIngresos.php',
+            url:'ajax/buscarEgresos.php',
             type:'POST',
             success:function(response){
             document.getElementById("resultadoBuscador").style.display = "block";
@@ -272,33 +211,57 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 
 	}
 
-	 $(document).ready(function(){
+	function listarEgresosPorCategoriaHistorico(){
+
+		var categoria = $("#categorias").val();
+
+		if(categoria!='todas'){
+
+				$.ajax({
+					data:{categoria:categoria},
+					url:'ajax/verEgresoPorCategoria.php',
+					type:'post',
+					success:function(response){
+						$("#listarEgresos").html(response);
+						
+						
+				
+					}
+				});
+		}else{
+
+				listarEgresos();
+
+		}//listarIngresosPorCategoria
+
+		
+	}//function
+
+	function verEgresoPorRangoDeFecha(){
+
+		var fechaDesde = $("#fechaDesde").val();
+
+		var fechaHasta = $("#fechaHasta").val();
+
+			$.ajax({
+					data:{fechaDesde:fechaDesde,fechaHasta:fechaHasta},
+					url:'ajax/verEgresoPorRangoDeFecha.php',
+					type:'post',
+					success:function(response){
+						$("#listarEgresos").html(response);
+						
+						
+				
+					}
+			});
+
+	}//fcuntion
+
+
+		 $(document).ready(function(){
     		$('select').formSelect();
   		});
-
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
