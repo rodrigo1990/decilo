@@ -590,10 +590,117 @@ class BaseDatos{
 
 	}//function
 
+
+	public function listarIngresosPorRangoDeFechaHistorico($fechaDesde,$fechaHasta){
+
+		$stmt=$this->mysqli->prepare("SELECT id,concepto,fecha,monto,observacion
+										  FROM ingreso_historico
+										  WHERE fecha BETWEEN (?) AND (?)");
+
+		$stmt->bind_param("ss",$fechaDesde,$fechaHasta);
+
+		$stmt->execute();
+
+		$resultado=$stmt->get_result();
+
+
+		$observacion='';
+
+		while($fila=$resultado->fetch_assoc()){
+
+			if(strlen($fila['observacion'])<=50)
+			  {
+			    echo $fila['observacion'];
+			  }
+			  else
+			  {
+			    $observacion='<a href="verDetalleIngreso.php?id='.$fila['id'].'" target="_blank">'.substr($fila['observacion'],0,50) . '...</a>';
+			  }
+
+			echo "<tr>
+					  <td>
+						".$fila['id']."
+					  </td>
+					  <td>
+						".$fila['concepto']."
+					  </td>
+					  <td>
+						".$observacion."
+					  </td>
+					  <td>
+						".date("d/m/Y", strtotime($fila['fecha']))."
+					  </td>
+					  <td>
+					  	".$fila['monto']."
+					  </td>
+				  </tr>";
+
+
+		}
+
+	}//function
+
+
 		public function listarEgresosPorRangoDeFecha($fechaDesde,$fechaHasta){
 
 		$stmt=$this->mysqli->prepare("SELECT id,concepto,fecha,monto,observacion
 										  FROM egreso
+										  WHERE fecha BETWEEN (?) AND (?)");
+
+		$stmt->bind_param("ss",$fechaDesde,$fechaHasta);
+
+		$stmt->execute();
+
+		$resultado=$stmt->get_result();
+
+
+		$observacion='';
+
+		while($fila=$resultado->fetch_assoc()){
+
+			if(strlen($fila['observacion'])<=50)
+			  {
+			    echo $fila['observacion'];
+			  }
+			  else
+			  {
+			    $observacion='<a href="verDetalleEgreso.php?id='.$fila['id'].'" target="_blank">'.substr($fila['observacion'],0,50) . '...</a>';
+			  }
+
+			echo "<tr>
+					  <td>
+						".$fila['id']."
+					  </td>
+					  <td>
+						".$fila['concepto']."
+					  </td>
+					  <td>
+						".$observacion."
+					  </td>
+					  <td>
+						".date("d/m/Y", strtotime($fila['fecha']))."
+					  </td>
+					  <td>
+					  	".$fila['monto']."
+					  </td>
+					  <td>
+						<a href='actualizarEgreso.php?id=".$fila['id']."'>Actualizar</a>
+					  </td>
+					  <td>
+						<a  style='cursor:pointer;' onClick='eliminarEgreso(".$fila['id'].");'>Eliminar</a>
+					  </td>
+				  </tr>";
+
+
+		}
+
+	}//function
+
+
+			public function listarEgresosPorRangoDeFechaHistorico($fechaDesde,$fechaHasta){
+
+		$stmt=$this->mysqli->prepare("SELECT id,concepto,fecha,monto,observacion
+										  FROM egreso_historico
 										  WHERE fecha BETWEEN (?) AND (?)");
 
 		$stmt->bind_param("ss",$fechaDesde,$fechaHasta);

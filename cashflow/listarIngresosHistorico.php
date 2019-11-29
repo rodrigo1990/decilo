@@ -21,7 +21,7 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 		 	<div class="row cont-gral">
 		  		<div class="container container-esp">
 		  			<div class="row">
-						<h3>Lista de ingresos</h3>
+						<h3>Lista de ingresos historicos</h3>
 					</div>
 					<div class="row table-cont" style="padding-bottom:5%;">		  			
 						<table>
@@ -79,16 +79,16 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 						</form>
 					</div>
 					<div class="row">
-						<a class="waves-effect waves-light btn float-right" onClick="verIngresoPorRangoDeFecha();" style="cursor:pointer">Ver</a>
+						<a class="waves-effect waves-light btn float-right" onClick="verIngresoPorRangoDeFechaHistorico();" style="cursor:pointer">Ver</a>
 
-						<a class="waves-effect waves-light btn float-right" onClick="listarIngresos();" style="cursor:pointer">Todas</a>
+						<a class="waves-effect waves-light btn float-right" onClick="listarIngresosHistorico();" style="cursor:pointer">Todas</a>
 					</div>
 
 
 
 
 					<!-- Eliminar ingresos -->
-					<div class="row">
+					<!--  <div class="row">
 						<h4>Eliminar ingresos por rango de fecha</h4>
 					</div>
 					<div class="row">
@@ -106,7 +106,7 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 					</div>
 					<div class="row last-row">
 						<a class="waves-effect waves-light btn float-right" onClick="eliminarIngresoPorRangoDeFecha();" style="cursor:pointer">Eliminar</a>
-					</div>
+					</div>-->
 					
 					
 					
@@ -127,10 +127,10 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 
 <script>
 
-	function listarIngresos(){
+	function listarIngresosHistorico(){
 
 		$.ajax({
-			url:'ajax/verIngresos.php',
+			url:'ajax/verIngresosHistorico.php',
 			type:'post',
 			success:function(response){
 				$("#listarIngresos").html(response);
@@ -141,7 +141,7 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 	}
 
 
-	function eliminarIngreso(id){
+	/*function eliminarIngreso(id){
 
 		var confirmar=confirm("¿Desea eliminar este ingreso?"); 
 
@@ -165,7 +165,7 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 
 
 
-	}
+	}*/
 
 
 	function eliminarIngresoPorRangoDeFecha(){
@@ -227,7 +227,7 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 		
 	}//function
 
-	function verIngresoPorRangoDeFecha(){
+	function verIngresoPorRangoDeFechaHistorico(){
 
 		var fechaDesde = $("#fechaDesde").val();
 
@@ -235,7 +235,7 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 
 			$.ajax({
 					data:{fechaDesde:fechaDesde,fechaHasta:fechaHasta},
-					url:'ajax/verIngresoPorRangoDeFecha.php',
+					url:'ajax/verIngresoPorRangoDeFechaHistorico.php',
 					type:'post',
 					success:function(response){
 						$("#listarIngresos").html(response);

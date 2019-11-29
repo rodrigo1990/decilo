@@ -23,7 +23,7 @@ include("../includes/menu-top-cashflow-buscadorEgresos.php");
 		 	<div class="row cont-gral">
 		  		<div class="container container-esp">
 		  			<div class="row">
-						<h3>Lista de egresos</h3>
+						<h3>Lista de egresos historicos</h3>
 					</div>
 					<div class="row" style="padding-bottom:5%;">		  			
 						<table>
@@ -79,7 +79,7 @@ include("../includes/menu-top-cashflow-buscadorEgresos.php");
 						</form>
 					</div>
 					<div class="row">
-						<a class="waves-effect waves-light btn float-right" onClick="verEgresoPorRangoDeFecha();" style="cursor:pointer">Ver</a>
+						<a class="waves-effect waves-light btn float-right" onClick="verEgresoPorRangoDeFechaHistorico();" style="cursor:pointer">Ver</a>
 
 						<a class="waves-effect waves-light btn float-right" onClick="listarEgresos();" style="cursor:pointer">Todas</a>
 					</div>
@@ -94,7 +94,7 @@ include("../includes/menu-top-cashflow-buscadorEgresos.php");
 
 
 
-					<div class="row">
+					<!-- <div class="row">
 						<h4>Eliminar egresos por rango de fecha</h4>
 					</div>
 					<div class="row">
@@ -112,7 +112,7 @@ include("../includes/menu-top-cashflow-buscadorEgresos.php");
 					</div>
 					<div class="row last-row">
 						<a class="waves-effect waves-light btn float-right" onClick="eliminarEgresoPorRangoDeFecha();" style="cursor:pointer;">Eliminar</a>
-					</div>
+					</div> -->
 
 		  		</div>
 		  </div>
@@ -219,7 +219,7 @@ function eliminarEgreso(id){
 
 				$.ajax({
 					data:{categoria:categoria},
-					url:'ajax/verEgresoPorCategoria.php',
+					url:'ajax/verEgresoPorCategoriaHistorico.php',
 					type:'post',
 					success:function(response){
 						$("#listarEgresos").html(response);
@@ -237,7 +237,7 @@ function eliminarEgreso(id){
 		
 	}//function
 
-	function verEgresoPorRangoDeFecha(){
+	function verEgresoPorRangoDeFechaHistorico(){
 
 		var fechaDesde = $("#fechaDesde").val();
 
@@ -245,7 +245,7 @@ function eliminarEgreso(id){
 
 			$.ajax({
 					data:{fechaDesde:fechaDesde,fechaHasta:fechaHasta},
-					url:'ajax/verEgresoPorRangoDeFecha.php',
+					url:'ajax/verEgresoPorRangoDeFechaHistorico.php',
 					type:'post',
 					success:function(response){
 						$("#listarEgresos").html(response);

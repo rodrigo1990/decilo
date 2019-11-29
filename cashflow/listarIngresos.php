@@ -21,7 +21,7 @@ include("../includes/menu-top-cashflow-buscadorIngresos.php");
 		 	<div class="row cont-gral">
 		  		<div class="container container-esp">
 		  			<div class="row">
-						<h3>Lista de ingresos</h3>
+						<h3>Lista de ingresos </h3>
 					</div>
 					<div class="row table-cont" style="padding-bottom:5%;">		  			
 						<table>
